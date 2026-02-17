@@ -1,0 +1,27 @@
+const screenNames = {
+  welcome: 'Welcome',
+  authentication: 'Authentication',
+  home: 'Home',
+  forgetPassword: 'ForgetPassword',
+  adminHome: 'AdminHome',
+  profile: 'Profile',
+  editProfile: 'EditProfile',
+  helpSupport: 'HelpSupport',
+  faqs: 'Faqs',
+  clientHome: 'ClientHome',
+  changePassword: 'ChangePassword',
+  notifications: 'Notifications',
+  addAuctionItem: 'AddAuctionItem',
+  admiHome: 'AdminHome',
+  adminAuctionItems: 'AdminAuctionItems',
+  adminHomeTab: 'AdminHomeTab',
+  myBids: 'MyBids',
+  favorites: 'Favorites',
+  clientHomeTab: 'ClientHomeTab',
+  privacyPolicies: 'PrivacyPolicies',
+  itemDetails: 'ItemDetails',
+  userDetails: 'UserDetails',
+  chatScreen: 'ChatScreen',
+} as const;
+
+export default screenNames;
