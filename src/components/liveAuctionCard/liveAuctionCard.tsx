@@ -15,9 +15,10 @@ import { height, width } from '../../utils/dimensions';
 interface LiveAuctionCardProps {
   item: AuctionItem;
   onPress?: () => void;
+  onViewBidDetails?: (vehicleId: string) => void;
 }
 
-export default function LiveAuctionCard({ item, onPress }: LiveAuctionCardProps) {
+export default function LiveAuctionCard({ item, onPress, onViewBidDetails }: LiveAuctionCardProps) {
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
@@ -127,7 +128,16 @@ export default function LiveAuctionCard({ item, onPress }: LiveAuctionCardProps)
         </View>
 
         {/* View Bid Details Button */}
-        <TouchableOpacity style={styles.viewButton} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.viewButton}
+          activeOpacity={0.8}
+          onPress={(e) => {
+            e.stopPropagation();
+            if (onViewBidDetails) {
+              onViewBidDetails(item._id);
+            }
+          }}
+        >
           <Eye size={16} color={appColors.white} />
           <Text style={styles.viewButtonText}>View Bid Details</Text>
         </TouchableOpacity>

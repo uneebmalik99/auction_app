@@ -200,6 +200,7 @@ export default function Profile() {
             variant="secondary"
             onPress={handleContactUs}
             buttonStyle={styles.secondaryButton}
+            textStyle={styles.logoutText}
           />
 
           <Button
@@ -207,6 +208,7 @@ export default function Profile() {
             variant="secondary"
             onPress={handleHelpSupport}
             buttonStyle={styles.secondaryButton}
+            textStyle={styles.logoutText}
           />
 
           <Button
@@ -214,6 +216,7 @@ export default function Profile() {
             variant="secondary"
             onPress={handlePrivacyPolicy}
             buttonStyle={styles.secondaryButton}
+            textStyle={styles.logoutText}
           />
 
           <Button
@@ -222,6 +225,7 @@ export default function Profile() {
             onPress={handleLogout}
             buttonStyle={styles.secondaryButton}
             disabled={loggingOut}
+            textStyle={styles.logoutText}
           />
 
           <Button

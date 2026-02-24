@@ -167,6 +167,7 @@ export default function HelpSupport() {
             onPress={handleFAQ}
             variant="secondary"
             buttonStyle={styles.actionButton}
+            textStyle={styles.logoutText}
           />
           {/* <Button
             label="Chat With Us (Chatbot)"
@@ -179,12 +180,14 @@ export default function HelpSupport() {
             onPress={handleOpenTicket}
             variant="secondary"
             buttonStyle={styles.actionButton}
+            textStyle={styles.logoutText}
           />
           <Button
             label={t('helpSupport.emailUs')}
             onPress={handleEmailUs}
             variant="secondary"
             buttonStyle={styles.actionButton}
+            textStyle={styles.logoutText}
           />
         </View>
       </View>

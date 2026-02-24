@@ -5,6 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import { Check, DollarSign, User, Calendar, Eye } from 'lucide-react-native';
 import { AuctionItem } from '../../utils/types';
@@ -50,10 +51,29 @@ function SoldVehicleCard({ item, onPress, onViewWinner }: SoldVehicleCardProps) 
     >
       {/* Image Section */}
       <View style={styles.imageSection}>
-        {item.photos?.[0] ? (
+        {(item as any).videos && (item as any).videos.length > 0 ? (
           <View style={styles.imageContainer}>
-            <Text style={styles.carDiagram}>🚗</Text>
+            {item.photos?.[0] ? (
+              <>
+                <Image
+                  source={{ uri: item.photos[0] }}
+                  style={styles.image}
+                  resizeMode="cover"
+                />
+                <View style={styles.videoLabelContainer}>
+                  <Text style={styles.videoLabel}>VIDEO</Text>
+                </View>
+              </>
+            ) : (
+              <Text style={styles.carDiagram}>🚗</Text>
+            )}
           </View>
+        ) : item.photos?.[0] ? (
+          <Image
+            source={{ uri: item.photos[0] }}
+            style={styles.image}
+            resizeMode="cover"
+          />
         ) : (
           <View style={styles.imageContainer}>
             <Text style={styles.carDiagram}>🚗</Text>
@@ -205,9 +225,29 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'relative',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
   },
   carDiagram: {
     fontSize: 60,
+  },
+  videoLabelContainer: {
+    position: 'absolute',
+    bottom: 8,
+    left: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    zIndex: 1,
+  },
+  videoLabel: {
+    color: appColors.white,
+    fontSize: 10,
+    fontWeight: '700',
   },
   soldBadge: {
     position: 'absolute',

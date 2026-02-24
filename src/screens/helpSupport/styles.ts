@@ -37,7 +37,9 @@ export const styles = StyleSheet.create({
   actionButton: {
     marginTop: height(1.2),
   },
-
+  logoutText: {
+    color: appColors.gray,
+  },
   sheetModal: {
     justifyContent: 'flex-end',
     margin: 0,

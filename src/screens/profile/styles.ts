@@ -74,4 +74,7 @@ export const styles = StyleSheet.create({
   deleteAccountText: {
     color: appColors.red,
   },
+  logoutText: {
+    color: appColors.gray,
+  },
 });
