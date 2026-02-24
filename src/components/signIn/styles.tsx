@@ -24,6 +24,9 @@ export const styles = StyleSheet.create({
   submitButton: {
     marginTop: height(2),
   },
+  createAccountText: {
+    color: appColors.gray,
+  },
   checkboxRow: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -70,18 +70,10 @@ export const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: appColors.surface,
   },
-  sectionNoBackground: {
-    marginBottom: height(3),
-  },
   sectionTitle: {
     fontSize: 15,
     fontWeight: '600',
     color: appColors.textSecondary,
-  },
-  sectionSubtitle: {
-    fontSize: 11,
-    color: appColors.textMuted,
-    marginTop: 4,
   },
   primaryButton: {
     marginTop: height(1.5),
@@ -95,23 +87,12 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: height(1.5),
   },
-  sectionHeaderRowNoPadding: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: height(2),
-    paddingHorizontal: width(4),
-  },
   sectionLink: {
     fontSize: 12,
     color: appColors.primary,
   },
   listContent: {
     paddingTop: height(0.5),
-  },
-  horizontalScrollContent: {
-    paddingHorizontal: width(4),
-    gap: width(3),
   },
   itemRow: {
     flexDirection: 'row',
@@ -147,25 +128,10 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: height(4),
   },
   emptyTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: appColors.textSecondary,
-    marginBottom: 4,
-  },
-  emptySubtitle: {
-    fontSize: 13,
-    color: appColors.textMuted,
-    textAlign: 'center',
-  },
-  emptyCard: {
-    backgroundColor: appColors.surface,
-    borderRadius: 16,
-    padding: width(6),
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: height(15),
   },
 });

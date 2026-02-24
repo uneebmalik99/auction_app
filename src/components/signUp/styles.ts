@@ -49,6 +49,9 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     color: appColors.textMuted,
   },
+  createAccountText: {
+    color: appColors.gray,
+  },
   submitButton: {
     marginTop: height(2),
   },

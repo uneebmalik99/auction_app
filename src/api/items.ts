@@ -139,7 +139,8 @@ export async function createAuctionItem(
 
   // Features as JSON string (adjust if your backend expects different)
   formData.append('features', JSON.stringify(payload.features ?? {}));
-
+  formData.append('sellerNationality', payload.sellerNationality ?? '');
+  formData.append('registrationCity', payload.registrationCity ?? '');
   // Append each selected image as multipart file under "photos"
   images.forEach((img, index) => {
     if (!img.uri) {

@@ -22,6 +22,9 @@ const screenNames = {
   itemDetails: 'ItemDetails',
   userDetails: 'UserDetails',
   chatScreen: 'ChatScreen',
+  brokerHomeTab: 'BrokerHomeTab',
+  brokerHome: 'BrokerHome',
+  brokerAuctionItems: 'BrokerAuctionItems',
 } as const;
 
 export default screenNames;

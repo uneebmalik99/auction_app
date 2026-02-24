@@ -91,7 +91,7 @@ export default function SignIn({ activeTab, setActiveTab }: AuthTabProps) {
       console.log('normalizedUser', normalizedUser);
       dispatch(setUser(normalizedUser));
 
-      const role:any = normalizedUser?.role;
+      const role: any = normalizedUser?.role;
       // const isAdmin = role === 2;
 
       console.log('data.token', data);
@@ -104,12 +104,20 @@ export default function SignIn({ activeTab, setActiveTab }: AuthTabProps) {
       // });
 
       await saveItem('auth_token', data.token || '');
-
+      console.log('role', role);
+      console.log('role type:', typeof role);
       // After successful login, reset to appropriate bottom tab screen
-      if (role === 2) {
+      if (role === 2 || role === 0) {
+        console.log('sign in as admin');
+
         navigation.reset({
           index: 0,
           routes: [{ name: screenNames.adminHomeTab }],
+        });
+      } else if (role === 4) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: screenNames.brokerHomeTab }],
         });
       } else {
         navigation.reset({
@@ -121,9 +129,7 @@ export default function SignIn({ activeTab, setActiveTab }: AuthTabProps) {
       console.error('Sign in error', error);
       Alert.alert(
         t('signIn.failedTitle'),
-        error instanceof Error
-          ? error.message
-          : t('signIn.failedMsg'),
+        error instanceof Error ? error.message : t('signIn.failedMsg'),
       );
     } finally {
       setLoading(false);
@@ -215,6 +221,7 @@ export default function SignIn({ activeTab, setActiveTab }: AuthTabProps) {
         label={t('signIn.createAccount')}
         onPress={() => setActiveTab('signUp')}
         buttonStyle={styles.submitButton}
+        textStyle={styles.createAccountText}
         variant="secondary"
         disabled={loading}
       />

@@ -1,223 +1,151 @@
-import React, { useState, useEffect, useRef } from 'react';
+/**
+ * VehicleChatScreen.tsx
+ * Main screen — composes all chat sub-components and the useVehicleChat hook.
+ *
+ * Route params:
+ *   vehicleId    : string
+ *   vehicleTitle : string
+ */
+
+import React, { useRef, useState, useCallback } from 'react';
 import {
   View,
-  Text,
-  TextInput,
-  TouchableOpacity,
   FlatList,
+  Text,
+  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
-  ActivityIndicator,
-  StyleSheet
+  ListRenderItemInfo,
 } from 'react-native';
-import { useChatSocket } from '../../../socket/chatSocketService'; 
-import { fetchCurrentUser } from '../../../api/autentication';
-import { User } from '../../../utils/types';
-import { useAppSelector } from '../../../redux/hooks';
 
-interface Message {
-  _id: string;
-  senderId: string;
-  senderName: string;
-  senderRole: "admin" | "customer";
-  message: string;
-  timestamp: string;
-  read: boolean;
-}
+import { useVehicleChat, Message } from './useVehicleChat';
+import ChatHeader from './ChatHeader';
+import MessageBubble from './MessageBubble';
+import ChatInput from './ChatInput';
+import { styles } from './styles';
 
-export default  function VehicleChatScreen({ route, navigation }: any) {
-  const { vehicleId, vehicleTitle } = route.params;
-  const { socket, isConnected } =  useChatSocket();
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState("");
-  const [sending, setSending] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const user = useAppSelector(state => state.profile.user);
-  const flatListRef = useRef<FlatList>(null);
-//   const user: User = await fetchCurrentUser();
-  const hasJoinedRef = useRef(false);
-  const hasRegisteredRef = useRef(false);
-
-  // Registration & Room Management (Same logic as web)
-  useEffect(() => {
-    if (!socket || !isConnected || !user) {
-      hasJoinedRef.current = false;
-      hasRegisteredRef.current = false;
-      return;
-    }
-
-    const userId = user.id || user.id ;
-    if (!userId) return;
-
-    if (!hasRegisteredRef.current) {
-      socket.emit("user_register", {
-        userId,
-        userName: user.name,
-        userEmail: user.email,
-        userRole: user.role,
-      });
-      hasRegisteredRef.current = true;
-    }
-
-    const joinTimeout = setTimeout(() => {
-      if (!hasJoinedRef.current) {
-        socket.emit("join_vehicle_chat", vehicleId);
-        socket.emit("request_chat_history", vehicleId);
-        hasJoinedRef.current = true;
-      }
-    }, 100);
-
-    return () => {
-      clearTimeout(joinTimeout);
-      if (hasJoinedRef.current) {
-        socket.emit("leave_vehicle_chat", vehicleId);
-        hasJoinedRef.current = false;
-      }
-    };
-  }, [socket, isConnected, vehicleId, user]);
-
-  // Socket Event Listeners
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleChatHistory = (history: Message[]) => setMessages(history);
-    const handleNewMessage = (message: Message) => {
-      setMessages((prev) => {
-        if (prev.some((m) => m._id === message._id)) return prev;
-        return [...prev, message];
-      });
-    };
-    const handleUserTyping = (data: any) => {
-      const userId = user?.id || user?.id;
-      if (data.userId !== userId) setIsTyping(data.isTyping);
-    };
-
-    socket.on("chat_history", handleChatHistory);
-    socket.on("new_message", handleNewMessage);
-    socket.on("user_typing", handleUserTyping);
-
-    return () => {
-      socket.off("chat_history", handleChatHistory);
-      socket.off("new_message", handleNewMessage);
-      socket.off("user_typing", handleUserTyping);
-    };
-  }, [socket, user]);
-
-  const handleSendMessage = () => {
-    if (!newMessage.trim() || !socket || sending || !isConnected) return;
-
-    const messageText = newMessage.trim();
-    setNewMessage("");
-    setSending(true);
-
-    socket.emit("send_message", { vehicleId, message: messageText });
-    
-    // Reset sending state after a short delay (or via server ack)
-    setTimeout(() => setSending(false), 500);
+// ── Adjust this to your actual API upload endpoint ──────────────────────────
+export default function VehicleChatScreen({ route, navigation }: any) {
+  const { vehicleId, vehicleTitle } = route.params as {
+    vehicleId: string;
+    vehicleTitle: string;
   };
 
-  const renderMessage = ({ item }: { item: Message }) => {
-    const isOwnMessage = item.senderRole === "customer";
-    return (
-      <View style={[styles.messageRow, isOwnMessage ? styles.rowReverse : styles.rowDirect]}>
-        <View style={[styles.bubble, isOwnMessage ? styles.ownBubble : styles.adminBubble]}>
-          <Text style={[styles.messageText, isOwnMessage ? styles.whiteText : styles.slateText]}>
-            {item.message}
-          </Text>
-          <Text style={styles.timeText}>
-            {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-          </Text>
-        </View>
-      </View>
-    );
-  };
+  const {
+    messages,
+    sending,
+    uploading,
+    isTyping,
+    isPinned,
+    isReady,
+    userId,
+    sendMessage,
+    deleteMessage,
+    togglePin,
+    uploadFile,
+  } = useVehicleChat(vehicleId);
 
+  const [inputText, setInputText] = useState('');
+  const flatListRef = useRef<FlatList<Message>>(null);
+
+  // ── Handlers ──────────────────────────────────────────────────────────────
+  const handleSend = useCallback(() => {
+    if (!inputText.trim()) return;
+    sendMessage(inputText);
+    setInputText('');
+  }, [inputText, sendMessage]);
+
+  const handleFileSelected = useCallback(
+    (file: { uri: string; name: string; type: string; size: number }) => {
+      uploadFile(file);
+    },
+    [uploadFile]
+  );
+
+  const scrollToBottom = useCallback(() => {
+    if (messages.length > 0) {
+      flatListRef.current?.scrollToEnd({ animated: true });
+    }
+  }, [messages.length]);
+
+  // ── Render helpers ────────────────────────────────────────────────────────
+  const renderItem = useCallback(
+    ({ item }: ListRenderItemInfo<Message>) => {
+      const isOwn =
+        item.senderId === userId || item.senderRole === 'customer';
+      return (
+        <MessageBubble
+          message={item}
+          isOwn={isOwn}
+          onDelete={deleteMessage}
+        />
+      );
+    },
+    [userId, deleteMessage]
+  );
+
+  const keyExtractor = useCallback((item: Message) => item._id, []);
+
+  const ListEmptyComponent = (
+    <View style={styles.emptyWrap}>
+      <Text style={{ fontSize: 40, opacity: 0.3 }}>💬</Text>
+      <Text style={styles.emptyText}>No messages yet</Text>
+      <Text style={styles.emptySubText}>Start the conversation</Text>
+    </View>
+  );
+
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <SafeAreaView style={styles.container}>
-      {/* Custom Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle} numberOfLines={1}>{vehicleTitle}</Text>
-        <View style={styles.statusRow}>
-          <View style={[styles.statusDot, { backgroundColor: isConnected ? '#4ade80' : '#94a3b8' }]} />
-          <Text style={styles.statusText}>{isConnected ? "Connected" : "Connecting..."}</Text>
-        </View>
-      </View>
-
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        keyExtractor={(item) => item._id}
-        renderItem={renderMessage}
-        contentContainerStyle={styles.listPadding}
-        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+      {/* Header */}
+      <ChatHeader
+        title={vehicleTitle}
+        isReady={isReady}
+        isPinned={isPinned}
+        onBack={() => navigation.goBack()}
+        onTogglePin={togglePin}
       />
 
-      {isTyping && <Text style={styles.typingText}>Admin is typing...</Text>}
-
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={newMessage}
-            onChangeText={setNewMessage}
-            placeholder="Type your message..."
-            placeholderTextColor="#64748b"
-            multiline
-          />
-          <TouchableOpacity 
-            onPress={handleSendMessage}
-            disabled={!newMessage.trim() || !isConnected || sending}
-            style={[styles.sendButton, (!newMessage.trim() || !isConnected) && styles.disabledButton]}
-          >
-            {sending ? <ActivityIndicator color="#fff" /> : <Text style={styles.sendButtonText}>Send</Text>}
-          </TouchableOpacity>
-        </View>
+        {/* Message list */}
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          contentContainerStyle={[
+            styles.listContent,
+            messages.length === 0 && { flex: 1 },
+          ]}
+          ListEmptyComponent={ListEmptyComponent}
+          onContentSizeChange={scrollToBottom}
+          onLayout={scrollToBottom}
+          removeClippedSubviews
+          initialNumToRender={20}
+          maxToRenderPerBatch={15}
+          windowSize={10}
+        />
+
+        {/* Typing indicator */}
+        {isTyping && (
+          <Text style={styles.typingText}>Admin is typing…</Text>
+        )}
+
+        {/* Input bar */}
+        <ChatInput
+          value={inputText}
+          onChange={setInputText}
+          onSend={handleSend}
+          onFileSelected={handleFileSelected}
+          sending={sending}
+          uploading={uploading}
+          disabled={!isReady}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f172a' },
-  header: { padding: 15, borderBottomWidth: 1, borderBottomColor: '#1e293b' },
-  headerTitle: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  statusRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
-  statusDot: { width: 8, height: 8, borderRadius: 4, marginRight: 6 },
-  statusText: { color: '#94a3b8', fontSize: 12 },
-  listPadding: { padding: 15 },
-  messageRow: { flexDirection: 'row', marginBottom: 12 },
-  rowReverse: { justifyContent: 'flex-end' },
-  rowDirect: { justifyContent: 'flex-start' },
-  bubble: { maxWidth: '80%', padding: 12, borderRadius: 15 },
-  ownBubble: { backgroundColor: '#2563eb', borderBottomRightRadius: 2 },
-  adminBubble: { backgroundColor: '#1e293b', borderBottomLeftRadius: 2 },
-  messageText: { fontSize: 14, lineHeight: 20 },
-  whiteText: { color: '#fff' },
-  slateText: { color: '#f1f5f9' },
-  timeText: { fontSize: 10, color: '#64748b', marginTop: 4, alignSelf: 'flex-end' },
-  typingText: { paddingLeft: 15, fontSize: 12, color: '#64748b', fontStyle: 'italic', marginBottom: 5 },
-  inputContainer: { 
-    flexDirection: 'row', 
-    padding: 10, 
-    backgroundColor: '#0f172a', 
-    borderTopWidth: 1, 
-    borderTopColor: '#1e293b',
-    alignItems: 'center'
-  },
-  input: { 
-    flex: 1, 
-    backgroundColor: '#1e293b', 
-    borderRadius: 20, 
-    paddingHorizontal: 15, 
-    paddingVertical: 8, 
-    color: '#fff',
-    maxHeight: 100
-  },
-  sendButton: { marginLeft: 10, backgroundColor: '#ef4444', paddingVertical: 10, paddingHorizontal: 15, borderRadius: 20 },
-  disabledButton: { opacity: 0.5 },
-  sendButtonText: { color: '#fff', fontWeight: 'bold' }
-});

@@ -27,6 +27,7 @@ import { fetchCurrentUser } from '../api/autentication';
 import { setUser } from '../redux/profileSlice';
 import { useAppDispatch } from '../redux/hooks';
 import VehicleChatScreen from '../screens/client/chatScreen/chatScreen';
+import BrokerBottomTabs from './bottomTabs/brokerBottomTabs/brokerBottomTabs';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -163,6 +164,10 @@ export function RootNavigator() {
         <Stack.Screen
           name={screenNames.adminHomeTab}
           component={AdminBottomTabs}
+        />
+        <Stack.Screen
+          name={screenNames.brokerHomeTab}
+          component={BrokerBottomTabs}
         />
         <Stack.Screen name={screenNames.profile} component={Profile} />
         <Stack.Screen name={screenNames.editProfile} component={EditProfile} />

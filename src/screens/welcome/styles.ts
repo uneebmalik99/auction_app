@@ -82,6 +82,9 @@ export const styles = StyleSheet.create({
   secondaryButton: {
     marginTop: height(1.5),
   },
+  secondaryButtonText: {
+    color: appColors.gray,
+  },
   footerText: {
     marginTop: height(2),
     textAlign: 'center',

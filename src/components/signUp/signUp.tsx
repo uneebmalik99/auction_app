@@ -30,13 +30,23 @@ export default function SignUp({ activeTab, setActiveTab }: AuthTabProps) {
   const { t } = useI18n();
 
   const handleSubmit = async () => {
-    if (!name || !email || !password || !confirmPassword || !phone || !address) {
+    if (
+      !name ||
+      !email ||
+      !password ||
+      !confirmPassword ||
+      !phone ||
+      !address
+    ) {
       Alert.alert(t('signUp.missingTitle'), t('signUp.missingMsg'));
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert(t('signUp.passwordMismatchTitle'), t('signUp.passwordMismatchMsg'));
+      Alert.alert(
+        t('signUp.passwordMismatchTitle'),
+        t('signUp.passwordMismatchMsg'),
+      );
       return;
     }
 
@@ -67,18 +77,13 @@ export default function SignUp({ activeTab, setActiveTab }: AuthTabProps) {
           },
         ]);
       } else {
-        Alert.alert(
-          t('signUp.failedTitle'),
-          t('signUp.failedMsg'),
-        );
+        Alert.alert(t('signUp.failedTitle'), t('signUp.failedMsg'));
       }
     } catch (error) {
       console.error('Sign up error', error);
       Alert.alert(
         t('signUp.failedTitle'),
-        error instanceof Error
-          ? error.message
-          : t('signUp.failedMsg'),
+        error instanceof Error ? error.message : t('signUp.failedMsg'),
       );
     } finally {
       setLoading(false);
@@ -159,9 +164,7 @@ export default function SignUp({ activeTab, setActiveTab }: AuthTabProps) {
       />
 
       <View style={styles.helperRow}>
-        <Text style={styles.helperText}>
-          {t('signUp.termsHelper')}
-        </Text>
+        <Text style={styles.helperText}>{t('signUp.termsHelper')}</Text>
       </View>
 
       <Button
@@ -174,6 +177,7 @@ export default function SignUp({ activeTab, setActiveTab }: AuthTabProps) {
         label={t('signUp.haveAccount')}
         onPress={() => setActiveTab('signIn')}
         buttonStyle={styles.submitButton}
+        textStyle={styles.createAccountText}
         variant="secondary"
         disabled={loading}
       />

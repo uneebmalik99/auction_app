@@ -18,6 +18,10 @@ import AuctionItemRow from './itemRow/itemRow';
 import Tabs from './tabs/tabs';
 import UserCard from './userCard/userCard';
 import PreviewModal from './previewModal/previewModal';
+import LiveAuctionCard from './liveAuctionCard/liveAuctionCard';
+import RecentlySoldVehicles from './recentlySoldVehicles/recentlySoldVehicles';
+import UpcomingAuctionCard from './upcomingAuctionCard/upcomingAuctionCard';
+import PendingAuctionCard from './pendingAuctionCard/pendingAuctionCard';
 export {
   SignIn,
   SignUp,
@@ -39,4 +43,8 @@ export {
   Tabs,
   UserCard,
   PreviewModal,
+  LiveAuctionCard,
+  RecentlySoldVehicles,
+  UpcomingAuctionCard,
+  PendingAuctionCard,
 };

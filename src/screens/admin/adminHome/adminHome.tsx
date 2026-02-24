@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import {
-  FlatList,
   SafeAreaView,
   ScrollView,
   Text,
@@ -12,6 +11,10 @@ import {
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
 import { AuctionItemRow, FloatingActionButton } from '../../../components';
+import LiveAuctionCard from '../../../components/liveAuctionCard/liveAuctionCard';
+import RecentlySoldVehicles from '../../../components/recentlySoldVehicles/recentlySoldVehicles';
+import UpcomingAuctionCard from '../../../components/upcomingAuctionCard/upcomingAuctionCard';
+import PendingAuctionCard from '../../../components/pendingAuctionCard/pendingAuctionCard';
 import type { AuctionItem, RootNavigationProp } from '../../../utils/types';
 import screenNames from '../../../routes/routes';
 import {
@@ -164,30 +167,182 @@ export default function AdminHome() {
               ))}
             </View>
 
-            {/* Recent Auctions */}
-            <View style={styles.section}>
-              <View style={styles.sectionHeaderRow}>
-                <Text style={styles.sectionTitle}>
-                  Auctions {items?.length}
-                </Text>
-                <TouchableOpacity onPress={handleViewAllAuctions}>
-                  <Text style={styles.sectionLink}>View all</Text>
-                </TouchableOpacity>
+            {/* Live Auctions */}
+            <View style={styles.sectionNoBackground}>
+              <View style={styles.sectionHeaderRowNoPadding}>
+                <View>
+                  <Text style={styles.sectionTitle}>Live Auctions</Text>
+                  <Text style={styles.sectionSubtitle}>
+                    Real-time monitoring •{' '}
+                    {items?.filter(item => item.status === 'live').length || 0}{' '}
+                    active auction
+                    {items?.filter(item => item.status === 'live').length !== 1
+                      ? 's'
+                      : ''}{' '}
+                    • Updated {new Date().toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
+                    })}
+                  </Text>
+                </View>
               </View>
 
-              <FlatList
-                data={items}
-                keyExtractor={item => item._id}
-                scrollEnabled={false}
-                contentContainerStyle={styles.listContent}
-                renderItem={({ item }) => <AuctionItemRow item={item} />}
-                ListEmptyComponent={
-                  <View style={styles.emptyState}>
-                    <Text style={styles.emptyTitle}>No items found</Text>
-                  </View>
-                }
-              />
+              {items && items.filter(item => item.status === 'live').length > 0 ? (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.horizontalScrollContent}
+                >
+                  {items.filter(item => item.status === 'live').map(item => (
+                    <LiveAuctionCard
+                      key={item._id}
+                      item={item}
+                      onPress={() => {
+                        navigation.navigate(screenNames.itemDetails, {
+                          auctionId: item._id,
+                          item,
+                        });
+                      }}
+                    />
+                  ))}
+                </ScrollView>
+              ) : (
+                <View style={styles.emptyCard}>
+                  <Text style={styles.emptyTitle}>No Live Auctions</Text>
+                  <Text style={styles.emptySubtitle}>
+                    There are currently no live auctions
+                  </Text>
+                </View>
+              )}
             </View>
+
+            {/* Upcoming Auctions */}
+            <View style={styles.sectionNoBackground}>
+              <View style={styles.sectionHeaderRowNoPadding}>
+                <View>
+                  <Text style={styles.sectionTitle}>Upcoming Auctions</Text>
+                  <Text style={styles.sectionSubtitle}>
+                    Scheduled auctions •{' '}
+                    {items?.filter(item => item.status === 'upcoming').length || 0}{' '}
+                    upcoming auction
+                    {items?.filter(item => item.status === 'upcoming').length !== 1
+                      ? 's'
+                      : ''}
+                  </Text>
+                </View>
+              </View>
+
+              {items && items.filter(item => item.status === 'upcoming').length > 0 ? (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.horizontalScrollContent}
+                >
+                  {items.filter(item => item.status === 'upcoming').map(item => (
+                    <UpcomingAuctionCard
+                      key={item._id}
+                      item={item}
+                      onPress={() => {
+                        navigation.navigate(screenNames.itemDetails, {
+                          auctionId: item._id,
+                          item,
+                        });
+                      }}
+                    />
+                  ))}
+                </ScrollView>
+              ) : (
+                <View style={styles.emptyCard}>
+                  <Text style={styles.emptyTitle}>No Upcoming Auctions</Text>
+                  <Text style={styles.emptySubtitle}>
+                    There are currently no upcoming auctions
+                  </Text>
+                </View>
+              )}
+            </View>
+
+            {/* Pending Auctions */}
+            <View style={styles.sectionNoBackground}>
+              <View style={styles.sectionHeaderRowNoPadding}>
+                <View>
+                  <Text style={styles.sectionTitle}>Pending Auctions</Text>
+                  <Text style={styles.sectionSubtitle}>
+                    Awaiting approval •{' '}
+                    {items?.filter(item => item.status === 'pending').length || 0}{' '}
+                    pending auction
+                    {items?.filter(item => item.status === 'pending').length !== 1
+                      ? 's'
+                      : ''}
+                  </Text>
+                </View>
+              </View>
+
+              {items && items.filter(item => item.status === 'pending').length > 0 ? (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.horizontalScrollContent}
+                >
+                  {items.filter(item => item.status === 'pending').map(item => (
+                    <PendingAuctionCard
+                      key={item._id}
+                      item={item}
+                      onPress={() => {
+                        navigation.navigate(screenNames.itemDetails, {
+                          auctionId: item._id,
+                          item,
+                        });
+                      }}
+                    />
+                  ))}
+                </ScrollView>
+              ) : (
+                <View style={styles.emptyCard}>
+                  <Text style={styles.emptyTitle}>No Pending Auctions</Text>
+                  <Text style={styles.emptySubtitle}>
+                    There are currently no pending auctions
+                  </Text>
+                </View>
+              )}
+            </View>
+
+            {/* Recently Sold Vehicles */}
+            {items && items.filter(item => item.status === 'sold').length > 0 ? (
+              <RecentlySoldVehicles
+                items={items}
+                onItemPress={item => {
+                  navigation.navigate(screenNames.itemDetails, {
+                    auctionId: item._id,
+                    item,
+                  });
+                }}
+                onViewWinner={item => {
+                  // Navigate to winner details or show modal
+                  navigation.navigate(screenNames.itemDetails, {
+                    auctionId: item._id,
+                    item,
+                  });
+                }}
+              />
+            ) : (
+              <View style={styles.section}>
+                <View style={styles.sectionHeaderRow}>
+                  <View>
+                    <Text style={styles.sectionTitle}>Recently Sold Vehicles</Text>
+                    <Text style={styles.sectionSubtitle}>
+                      Latest completed sales • 0 vehicles
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.emptyCard}>
+                  <Text style={styles.emptyTitle}>No Sold Vehicles</Text>
+                  <Text style={styles.emptySubtitle}>
+                    There are currently no sold vehicles
+                  </Text>
+                </View>
+              </View>
+            )}
           </View>
         )}
       </ScrollView>

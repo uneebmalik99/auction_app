@@ -45,19 +45,21 @@ export default function Welcome() {
           <Text style={styles.title}>{t('welcome.title1')}</Text>
           <Text style={styles.title}>{t('welcome.title2')}</Text>
 
-          <Text style={styles.subtitle}>
-            {t('welcome.subtitle')}
-          </Text>
+          <Text style={styles.subtitle}>{t('welcome.subtitle')}</Text>
 
           <View style={styles.highlightRow}>
             <View style={styles.highlightPill}>
-              <Text style={styles.highlightText}>{t('welcome.verifiedSellers')}</Text>
+              <Text style={styles.highlightText}>
+                {t('welcome.verifiedSellers')}
+              </Text>
             </View>
             {/* <View style={styles.highlightPill}>
               <Text style={styles.highlightText}>Secure payments</Text>
             </View> */}
             <View style={styles.highlightPill}>
-              <Text style={styles.highlightText}>{t('welcome.liveBidding')}</Text>
+              <Text style={styles.highlightText}>
+                {t('welcome.liveBidding')}
+              </Text>
             </View>
           </View>
         </View>
@@ -74,11 +76,10 @@ export default function Welcome() {
             onPress={handleSignUp}
             buttonStyle={styles.secondaryButton}
             variant="secondary"
+            textStyle={styles.secondaryButtonText}
           />
 
-          <Text style={styles.footerText}>
-            {t('welcome.languageHint')}
-          </Text>
+          <Text style={styles.footerText}>{t('welcome.languageHint')}</Text>
         </View>
       </View>
     </SafeAreaView>
