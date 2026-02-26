@@ -1,0 +1,623 @@
+import { StyleSheet, Dimensions } from 'react-native';
+import { appColors } from '../../../utils/appColors';
+
+const { width, height } = Dimensions.get('window');
+
+export const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: appColors.background,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: appColors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: appColors.inputBorder,
+  },
+  backButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: appColors.textPrimary,
+    flex: 1,
+    textAlign: 'center',
+  },
+  createButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: appColors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  container: {
+    flex: 1,
+  },
+  alertError: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEE2E2',
+    padding: 12,
+    marginHorizontal: 16,
+    marginTop: 12,
+    borderRadius: 8,
+    gap: 8,
+  },
+  alertSuccess: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#D1FAE5',
+    padding: 12,
+    marginHorizontal: 16,
+    marginTop: 12,
+    borderRadius: 8,
+    gap: 8,
+  },
+  alertText: {
+    flex: 1,
+    fontSize: 14,
+    color: appColors.textPrimary,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    gap: 12,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: appColors.surface,
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: appColors.inputBorder,
+  },
+  statValue: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: appColors.textPrimary,
+    marginTop: 8,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: appColors.textMuted,
+    marginTop: 4,
+  },
+  tabsContainer: {
+    marginVertical: 12,
+  },
+  tabsContent: {
+    paddingHorizontal: 16,
+    gap: 8,
+  },
+  tab: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: appColors.surface,
+    borderWidth: 1,
+    borderColor: appColors.inputBorder,
+  },
+  tabActive: {
+    backgroundColor: appColors.primary,
+    borderColor: appColors.primary,
+  },
+  tabText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: appColors.textSecondary,
+  },
+  tabTextActive: {
+    color: appColors.white,
+  },
+  filtersContainer: {
+    marginBottom: 12,
+  },
+  filtersContent: {
+    paddingHorizontal: 16,
+    gap: 8,
+  },
+  filterButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: appColors.surface,
+    borderWidth: 1,
+    borderColor: appColors.inputBorder,
+  },
+  filterButtonActive: {
+    backgroundColor: appColors.primary,
+    borderColor: appColors.primary,
+  },
+  filterButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: appColors.textSecondary,
+  },
+  filterButtonTextActive: {
+    color: appColors.white,
+  },
+  usersList: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  userCard: {
+    backgroundColor: appColors.white,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: appColors.inputBorder,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  userCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  userAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 12,
+  },
+  userAvatarPlaceholder: {
+    backgroundColor: appColors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  userAvatarText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: appColors.white,
+  },
+  userInfo: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: appColors.textPrimary,
+    marginBottom: 4,
+  },
+  userEmail: {
+    fontSize: 14,
+    color: appColors.textMuted,
+  },
+  userDetails: {
+    marginBottom: 12,
+    gap: 8,
+  },
+  userDetailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  userDetailText: {
+    fontSize: 14,
+    color: appColors.textSecondary,
+    flex: 1,
+  },
+  userBadges: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 12,
+  },
+  badge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  badgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  userActions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    alignItems: 'center',
+  },
+  permissionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: appColors.purple,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    gap: 6,
+  },
+  permissionButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: appColors.white,
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    gap: 6,
+  },
+  approveButton: {
+    backgroundColor: appColors.green,
+  },
+  rejectButton: {
+    backgroundColor: appColors.red,
+  },
+  actionButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: appColors.white,
+  },
+  brokerHint: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  brokerHintText: {
+    fontSize: 12,
+    color: appColors.orange,
+    fontStyle: 'italic',
+  },
+  loadingContainer: {
+    padding: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: appColors.textMuted,
+  },
+  emptyContainer: {
+    padding: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: appColors.textPrimary,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: appColors.textMuted,
+    textAlign: 'center',
+  },
+  pagination: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderTopWidth: 1,
+    borderTopColor: appColors.inputBorder,
+  },
+  paginationButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: appColors.surface,
+    gap: 8,
+  },
+  paginationButtonDisabled: {
+    opacity: 0.5,
+  },
+  paginationButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: appColors.textPrimary,
+  },
+  paginationText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: appColors.textSecondary,
+  },
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: appColors.white,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: height * 0.9,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: appColors.inputBorder,
+  },
+  brokerModalHeader: {
+    backgroundColor: appColors.orange,
+    borderBottomWidth: 0,
+  },
+  permissionsModalHeader: {
+    backgroundColor: appColors.purple,
+    borderBottomWidth: 0,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: appColors.textPrimary,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: appColors.textMuted,
+    marginTop: 4,
+  },
+  modalCloseButton: {
+    padding: 4,
+  },
+  modalBody: {
+    padding: 16,
+    maxHeight: height * 0.6,
+  },
+  modalFooter: {
+    flexDirection: 'row',
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: appColors.inputBorder,
+    gap: 12,
+  },
+  modalButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    borderRadius: 8,
+    gap: 8,
+  },
+  modalButtonPrimary: {
+    backgroundColor: appColors.primary,
+  },
+  modalButtonSecondary: {
+    backgroundColor: appColors.surface,
+  },
+  modalButtonTextPrimary: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: appColors.white,
+  },
+  modalButtonTextSecondary: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: appColors.textPrimary,
+  },
+  // Form Styles
+  formGroup: {
+    marginBottom: 16,
+  },
+  formLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: appColors.textPrimary,
+    marginBottom: 8,
+  },
+  required: {
+    color: appColors.red,
+  },
+  formInput: {
+    backgroundColor: appColors.inputBackground,
+    borderWidth: 1,
+    borderColor: appColors.inputBorder,
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    color: appColors.textPrimary,
+  },
+  textArea: {
+    minHeight: 80,
+    textAlignVertical: 'top',
+  },
+  passwordInputContainer: {
+    position: 'relative',
+  },
+  passwordToggle: {
+    position: 'absolute',
+    right: 12,
+    top: 12,
+    padding: 4,
+  },
+  roleButtons: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  roleButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: appColors.inputBorder,
+    backgroundColor: appColors.inputBackground,
+  },
+  roleButtonActive: {
+    backgroundColor: appColors.primary,
+    borderColor: appColors.primary,
+  },
+  roleButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: appColors.textSecondary,
+  },
+  roleButtonTextActive: {
+    color: appColors.white,
+  },
+  // Broker Modal Styles
+  brokerModalContent: {
+    maxHeight: height * 0.95,
+  },
+  brokerInfo: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  brokerAvatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 12,
+  },
+  brokerAvatarPlaceholder: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: appColors.orange,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  brokerAvatarText: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: appColors.white,
+  },
+  brokerName: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: appColors.textPrimary,
+    marginBottom: 12,
+  },
+  brokerContact: {
+    width: '100%',
+    gap: 8,
+  },
+  brokerContactRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  brokerContactText: {
+    fontSize: 14,
+    color: appColors.textSecondary,
+    flex: 1,
+  },
+  brokerStatsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginBottom: 16,
+  },
+  brokerStatCard: {
+    width: (width - 64) / 2 - 6,
+    backgroundColor: appColors.surface,
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: appColors.inputBorder,
+  },
+  brokerStatIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: appColors.inputBackground,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  brokerStatValue: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: appColors.textPrimary,
+    marginBottom: 4,
+  },
+  brokerStatLabel: {
+    fontSize: 12,
+    color: appColors.textMuted,
+    textAlign: 'center',
+  },
+  statsLoading: {
+    padding: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statsLoadingText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: appColors.textMuted,
+  },
+  statsError: {
+    padding: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statsErrorText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: appColors.textMuted,
+  },
+  // Permissions Modal Styles
+  permissionsLoading: {
+    padding: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  permissionsLoadingText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: appColors.textMuted,
+  },
+  permissionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: appColors.inputBackground,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: appColors.inputBorder,
+  },
+  permissionItemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
+  },
+  permissionItemLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: appColors.textPrimary,
+    marginBottom: 4,
+  },
+  permissionItemDescription: {
+    fontSize: 12,
+    color: appColors.textMuted,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: appColors.inputBorder,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxChecked: {
+    backgroundColor: appColors.green,
+    borderColor: appColors.green,
+  },
+});

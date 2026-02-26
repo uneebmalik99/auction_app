@@ -38,6 +38,8 @@ import {
   Package,
   MessageCircle,
   Home as HomeIcon,
+  Users,
+  FileText,
 } from 'lucide-react-native';
 import { appColors } from '../../../utils/appColors';
 import { fetchItems } from '../../../api/items';
@@ -143,6 +145,10 @@ export default function AdminHome() {
     } else if (screen === 'chats') {
       // Navigate to chats tab - handled by bottom tab navigator
       // You can use navigation.navigate if needed
+    } else if (screen === 'users') {
+      navigation.navigate(screenNames.adminUsers);
+    } else if (screen === 'invoices') {
+      navigation.navigate(screenNames.adminInvoices);
     } else if (screen === 'profile') {
       navigation.navigate(screenNames.profile);
     } else if (screen === 'settings') {
@@ -1038,6 +1044,24 @@ export default function AdminHome() {
               >
                 <MessageCircle size={20} color={appColors.textPrimary} />
                 <Text style={styles.drawerMenuItemText}>Chats</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => handleDrawerItemPress('users')}
+                activeOpacity={0.7}
+              >
+                <Users size={20} color={appColors.textPrimary} />
+                <Text style={styles.drawerMenuItemText}>Users</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => handleDrawerItemPress('invoices')}
+                activeOpacity={0.7}
+              >
+                <FileText size={20} color={appColors.textPrimary} />
+                <Text style={styles.drawerMenuItemText}>Invoices</Text>
               </TouchableOpacity>
 
               <TouchableOpacity

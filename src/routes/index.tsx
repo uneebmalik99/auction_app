@@ -17,6 +17,8 @@ import {
   PrivacyPolicies,
   ItemDetailsScreen,
   UserDetailsScreen,
+  AdminUsers,
+  AdminInvoices,
 } from '../screens';
 import ClientBottomTabs from './bottomTabs/clientBottomTabs/clientBottomTabs';
 import AdminBottomTabs from './bottomTabs/adminBotttomTabs/adminBottomTabs';
@@ -208,6 +210,14 @@ export function RootNavigator() {
         <Stack.Screen
           name={screenNames.chatScreen}
           component={VehicleChatScreen}
+        />
+        <Stack.Screen
+          name={screenNames.adminUsers}
+          component={AdminUsers}
+        />
+        <Stack.Screen
+          name={screenNames.adminInvoices}
+          component={AdminInvoices}
         />
         </Stack.Navigator>
     </NavigationContainer>

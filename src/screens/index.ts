@@ -15,6 +15,8 @@ import ItemDetailsScreen from './itemDetails/itemDetails';
 import UserDetailsScreen from './userDetails/userDetails';
 import HelpSupport from './helpSupport/helpSupport';
 import Faqs from './faqs/faqs';
+import AdminUsers from './admin/adminUsers/adminUsers';
+import AdminInvoices from './admin/adminInvoices/adminInvoices';
 
 export {
   Authentication,
@@ -34,4 +36,6 @@ export {
   PrivacyPolicies,
   ItemDetailsScreen,
   UserDetailsScreen,
+  AdminUsers,
+  AdminInvoices,
 };

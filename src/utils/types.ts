@@ -25,6 +25,8 @@ export type RootStackParamList = {
     | { auctionId: string; item?: AuctionItem; myBids?: boolean }
     | undefined;
   UserDetails: { user?: User | null; userId?: string | null };
+  AdminUsers: undefined;
+  AdminInvoices: undefined;
 };
 
 export type RootNavigationProp = NativeStackNavigationProp<RootStackParamList>;
