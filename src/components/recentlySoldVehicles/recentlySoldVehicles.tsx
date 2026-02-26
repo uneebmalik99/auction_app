@@ -140,17 +140,6 @@ export default function RecentlySoldVehicles({
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerIcon}>
-          <Check size={16} color={appColors.green} />
-        </View>
-        <View style={styles.headerText}>
-          <Text style={styles.title}>Recently Sold Vehicles</Text>
-          <Text style={styles.subtitle}>
-            Latest completed sales • {soldItems.length} vehicles
-          </Text>
-        </View>
-      </View>
 
       <ScrollView
         horizontal

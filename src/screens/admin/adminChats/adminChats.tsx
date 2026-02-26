@@ -108,11 +108,14 @@ export default function AdminChats() {
           <Text style={styles.chatMessage} numberOfLines={1}>
             {item.lastMessage || 'No messages yet'}
           </Text>
-          {item?.unreadCount && item?.unreadCount !== 0 && (
+           <View style={[styles.unreadBadge, { display: item?.unreadCount && item?.unreadCount !== 0 ? 'flex' : 'none' }]}>
+              <Text style={styles.unreadText}>{item.unreadCount}</Text>
+            </View>
+          {/* {item?.unreadCount && item?.unreadCount !== 0 && (
             <View style={styles.unreadBadge}>
               <Text style={styles.unreadText}>{item.unreadCount}</Text>
             </View>
-          )}
+          )} */}
         </View>
       </View>
     </TouchableOpacity>

@@ -50,6 +50,7 @@ export default function ForgetPassword() {
         variant="secondary"
         onPress={handleBackToSignIn}
         buttonStyle={styles.secondaryButton}
+        textStyle={styles.secondaryButtonText}
       />
     </View>
   );
