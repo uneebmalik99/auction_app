@@ -7,18 +7,21 @@ import {
   Package,
   PlusCircle,
   User,
+  MessageCircle,
 } from 'lucide-react-native';
 import { appColors } from '../../../utils/appColors';
 import AdminHome from '../../../screens/admin/adminHome/adminHome';
 import AuctionItems from '../../../screens/admin/auctionItems/auctionItems';
 import AddAuctionItem from '../../../screens/admin/addAuctionItem/addAuctionItem';
 import Profile from '../../../screens/profile/profile';
+import AdminChats from '../../../screens/admin/adminChats/adminChats';
 import screenNames from '../../routes';
 import { useI18n } from '../../../i18n';
 
 type AdminTabParamList = {
   AdminHome: undefined;
   AdminAuctionItems: undefined;
+  AdminChats: undefined;
   Profile: undefined;
 };
 
@@ -57,6 +60,8 @@ export default function AdminBottomTabs() {
               return <Home size={size} color={color} />;
             case screenNames.adminAuctionItems:
               return <Package size={size} color={color} />;
+            case screenNames.adminChats:
+              return <MessageCircle size={size} color={color} />;
             case screenNames.profile:
             default:
               return <User size={size} color={color} />;
@@ -72,13 +77,13 @@ export default function AdminBottomTabs() {
       <Tab.Screen
         name={screenNames.adminAuctionItems}
         component={AuctionItems}
-        options={{ title: t('bottomTab.items') }}
+        options={{ title: 'Vehicles' }}
       />
-      {/* <Tab.Screen
-        name="AddAuctionItem"
-        component={AddAuctionItem}
-        options={{ title: 'Add item' }}
-      /> */}
+      <Tab.Screen
+        name="AdminChats"
+        component={AdminChats}
+        options={{ title: 'Chats' }}
+      />
       <Tab.Screen
         name={screenNames.profile}
         component={Profile}

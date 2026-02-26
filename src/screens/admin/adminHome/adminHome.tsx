@@ -31,6 +31,13 @@ import {
   User,
   Eye,
   Calendar,
+  Menu,
+  Settings,
+  HelpCircle,
+  LogOut,
+  Package,
+  MessageCircle,
+  Home as HomeIcon,
 } from 'lucide-react-native';
 import { appColors } from '../../../utils/appColors';
 import { fetchItems } from '../../../api/items';
@@ -117,6 +124,7 @@ export default function AdminHome() {
     sold: 0,
   });
   const [statsLoading, setStatsLoading] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
   const handleViewAllAuctions = () => {
     navigation.navigate(screenNames.adminAuctionItems);
@@ -124,6 +132,26 @@ export default function AdminHome() {
 
   const handleGoToNotifications = () => {
     navigation.navigate(screenNames.notifications);
+  };
+
+  const handleDrawerItemPress = (screen: string) => {
+    setDrawerVisible(false);
+    if (screen === 'home') {
+      // Already on home
+    } else if (screen === 'vehicles') {
+      navigation.navigate(screenNames.adminAuctionItems);
+    } else if (screen === 'chats') {
+      // Navigate to chats tab - handled by bottom tab navigator
+      // You can use navigation.navigate if needed
+    } else if (screen === 'profile') {
+      navigation.navigate(screenNames.profile);
+    } else if (screen === 'settings') {
+      // Navigate to settings if exists
+    } else if (screen === 'help') {
+      navigation.navigate(screenNames.helpSupport);
+    } else if (screen === 'logout') {
+      // Handle logout
+    }
   };
 
   const handleStatCardClick = (type: 'live' | 'pending' | 'upcoming' | 'sold') => {
@@ -592,9 +620,15 @@ export default function AdminHome() {
       >
         {/* Header Row */}
         <View style={styles.headerRow}>
-          <View>
-            <Text style={styles.greetingLabel}>{greeting},</Text>
-            <Text style={styles.greetingName}>{currentUser?.name}</Text>
+          <View style={styles.headerLeft}>
+            <TouchableOpacity
+              style={styles.menuButton}
+              activeOpacity={0.8}
+              onPress={() => setDrawerVisible(true)}
+            >
+              <Menu size={24} color={appColors.textSecondary} />
+            </TouchableOpacity>
+            
           </View>
           <TouchableOpacity
             style={styles.notificationIconButton}
@@ -950,6 +984,95 @@ export default function AdminHome() {
             </View>
           </View>
         </View>
+      </Modal>
+
+      {/* Drawer Navigation */}
+      <Modal
+        visible={drawerVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setDrawerVisible(false)}
+      >
+        <TouchableOpacity
+          style={styles.drawerOverlay}
+          activeOpacity={1}
+          onPress={() => setDrawerVisible(false)}
+        >
+          <View style={styles.drawerContent}>
+            <View style={styles.drawerHeader}>
+              <View>
+                <Text style={styles.drawerUserName}>{currentUser?.name}</Text>
+                <Text style={styles.drawerUserEmail}>{currentUser?.email}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => setDrawerVisible(false)}
+                style={styles.drawerCloseButton}
+              >
+                <X size={24} color={appColors.textPrimary} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.drawerMenu}>
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => handleDrawerItemPress('home')}
+                activeOpacity={0.7}
+              >
+                <HomeIcon size={20} color={appColors.textPrimary} />
+                <Text style={styles.drawerMenuItemText}>Home</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => handleDrawerItemPress('vehicles')}
+                activeOpacity={0.7}
+              >
+                <Package size={20} color={appColors.textPrimary} />
+                <Text style={styles.drawerMenuItemText}>Vehicles</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => handleDrawerItemPress('chats')}
+                activeOpacity={0.7}
+              >
+                <MessageCircle size={20} color={appColors.textPrimary} />
+                <Text style={styles.drawerMenuItemText}>Chats</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => handleDrawerItemPress('profile')}
+                activeOpacity={0.7}
+              >
+                <User size={20} color={appColors.textPrimary} />
+                <Text style={styles.drawerMenuItemText}>Profile</Text>
+              </TouchableOpacity>
+
+              <View style={styles.drawerDivider} />
+
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => handleDrawerItemPress('help')}
+                activeOpacity={0.7}
+              >
+                <HelpCircle size={20} color={appColors.textPrimary} />
+                <Text style={styles.drawerMenuItemText}>Help & Support</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.drawerMenuItem, styles.drawerMenuItemLogout]}
+                onPress={() => handleDrawerItemPress('logout')}
+                activeOpacity={0.7}
+              >
+                <LogOut size={20} color={appColors.red} />
+                <Text style={[styles.drawerMenuItemText, styles.drawerMenuItemTextLogout]}>
+                  Logout
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableOpacity>
       </Modal>
     </SafeAreaView>
   );

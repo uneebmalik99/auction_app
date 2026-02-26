@@ -21,6 +21,19 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: height(3),
   },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: width(3),
+  },
+  menuButton: {
+    width: height(4.5),
+    height: height(4.5),
+    borderRadius: height(2.25),
+    backgroundColor: appColors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   greetingLabel: {
     fontSize: 15,
     color: appColors.textMuted,
@@ -376,5 +389,70 @@ export const styles = StyleSheet.create({
     color: appColors.white,
     fontSize: 14,
     fontWeight: '700',
+  },
+  // Drawer Styles
+  drawerOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flexDirection: 'row',
+  },
+  drawerContent: {
+    width: width(75),
+    backgroundColor: appColors.surface,
+    paddingTop: height(6),
+    shadowColor: '#000',
+    shadowOffset: { width: -2, height: 0 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  drawerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    paddingHorizontal: width(4),
+    paddingBottom: height(3),
+    borderBottomWidth: 1,
+    borderBottomColor: appColors.inputBorder,
+  },
+  drawerUserName: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: appColors.textPrimary,
+    marginBottom: 4,
+  },
+  drawerUserEmail: {
+    fontSize: 14,
+    color: appColors.textMuted,
+  },
+  drawerCloseButton: {
+    padding: 4,
+  },
+  drawerMenu: {
+    paddingTop: height(2),
+  },
+  drawerMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: width(4),
+    paddingVertical: height(1.8),
+    gap: width(3),
+  },
+  drawerMenuItemText: {
+    fontSize: 16,
+    color: appColors.textPrimary,
+    fontWeight: '500',
+  },
+  drawerMenuItemLogout: {
+    marginTop: height(2),
+  },
+  drawerMenuItemTextLogout: {
+    color: appColors.red,
+  },
+  drawerDivider: {
+    height: 1,
+    backgroundColor: appColors.inputBorder,
+    marginVertical: height(1),
+    marginHorizontal: width(4),
   },
 });
