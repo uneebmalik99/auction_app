@@ -5,7 +5,7 @@ import { styles } from './styles';
 import Input from '../input/input';
 import PasswordInput from '../passwordInput/passwordInput';
 import Button from '../button/button';
-import type { AuthScreenNavigationProp, AuthTab } from '../../utils/types';
+import type { RootNavigationProp, AuthTab } from '../../utils/types';
 import screenNames from '../../routes/routes';
 import { signIn, setAuthToken } from '../../api/autentication';
 import { useAppDispatch } from '../../redux/hooks';
@@ -30,7 +30,7 @@ export default function SignIn({ activeTab, setActiveTab }: AuthTabProps) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const navigation = useNavigation<AuthScreenNavigationProp>();
+  const navigation = useNavigation<RootNavigationProp>();
   const dispatch = useAppDispatch();
   const { t } = useI18n();
 
@@ -122,7 +122,7 @@ export default function SignIn({ activeTab, setActiveTab }: AuthTabProps) {
       } else {
         navigation.reset({
           index: 0,
-          routes: [{ name: screenNames.clientHomeTab }],
+          routes: [{ name: screenNames.customerHomeTab }],
         });
       }
     } catch (error) {

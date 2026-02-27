@@ -25,7 +25,7 @@ import { getItem } from '../../../utils/methods';
 import { useNotifications } from '../../../hooks/useNotification';
 import { useGreeting } from '../../../hooks/useGreeting';
 
-export default function ClientHome() {
+export default function CustomerHome() {
   const navigation = useNavigation<RootNavigationProp>();
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(state => state.profile.user);
@@ -148,7 +148,7 @@ export default function ClientHome() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* <Header title="Client home" showBackButton={false} /> */}
+      {/* <Header title="Customer home" showBackButton={false} /> */}
 
       <ScrollView
         style={styles.container}

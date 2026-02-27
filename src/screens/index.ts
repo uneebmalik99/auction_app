@@ -4,7 +4,7 @@ import ForgetPassword from './forgetPassword/forgetPassword';
 import AdminHome from './admin/adminHome/adminHome';
 import Profile from './profile/profile';
 import EditProfile from './editProfile/editProfile';
-import ClientHome from './client/clientHome/clientHome';
+import CustomerHome from './client/clientHome/clientHome';
 import ChangePassword from './changePassword/changePassword';
 import Welcome from './welcome/welcome';
 import NotificationsScreen from './notifications/notifications';
@@ -30,7 +30,7 @@ export {
   EditProfile,
   HelpSupport,
   Faqs,
-  ClientHome,
+  CustomerHome,
   ChangePassword,
   Welcome,
   NotificationsScreen,

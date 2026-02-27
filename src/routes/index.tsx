@@ -23,7 +23,7 @@ import {
   BrokerInvoices,
   BrokerAuctionItems,
 } from '../screens';
-import ClientBottomTabs from './bottomTabs/clientBottomTabs/clientBottomTabs';
+import CustomerBottomTabs from './bottomTabs/clientBottomTabs/clientBottomTabs';
 import AdminBottomTabs from './bottomTabs/adminBotttomTabs/adminBottomTabs';
 import type { RootStackParamList } from '../utils/types';
 import screenNames from './routes';
@@ -87,7 +87,7 @@ export function RootNavigator() {
           if (credentials?.username === 'admin') {
             setInitialRoute(screenNames.adminHomeTab);
           } else {
-            setInitialRoute(screenNames?.clientHomeTab);
+            setInitialRoute(screenNames?.customerHomeTab);
           }
         } else {
           setInitialRoute(screenNames.welcome);
@@ -127,7 +127,7 @@ export function RootNavigator() {
   //         if (credentials.username === 'admin') {
   //           setInitialRoute(screenNames.adminHomeTab);
   //         } else {
-  //           setInitialRoute(screenNames.clientHomeTab);
+  //           setInitialRoute(screenNames.customerHomeTab);
   //         }
   //       } else {
   //         // No stored credentials
@@ -182,8 +182,8 @@ export function RootNavigator() {
         />
         <Stack.Screen name={screenNames.faqs} component={Faqs} />
         <Stack.Screen
-          name={screenNames.clientHomeTab}
-          component={ClientBottomTabs}
+          name={screenNames.customerHomeTab}
+          component={CustomerBottomTabs}
         />
         <Stack.Screen
           name={screenNames.changePassword}

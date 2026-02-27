@@ -10,13 +10,14 @@ export type RootStackParamList = {
   EditProfile: undefined;
   HelpSupport: undefined;
   Faqs: undefined;
-  ClientHome: undefined;
+  CustomerHome: undefined;
   ChangePassword: undefined;
   Notifications: undefined;
   AddAuctionItem: undefined;
   AdminHomeTab: undefined;
+  BrokerHomeTab: undefined;
   AdminAuctionItems: undefined;
-  ClientHomeTab: undefined;
+  CustomerHomeTab: undefined;
   MyBids: undefined;
   Favorites: undefined;
   PrivacyPolicies: undefined;

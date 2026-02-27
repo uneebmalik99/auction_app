@@ -62,9 +62,11 @@ export default function BrokerChats() {
             vehicleId: vehicle._id,
             vehicleTitle: vehicle.title || `${vehicle.make} ${vehicle.model}`,
             lastMessage: 'Click to view messages',
-            lastMessageTime: new Date(vehicle.updatedAt || vehicle.createdAt).toLocaleDateString(),
+            lastMessageTime: new Date(
+              vehicle.updatedAt || vehicle.createdAt,
+            ).toLocaleDateString(),
             unreadCount: 0,
-            participantName: 'Client',
+            participantName: 'Customer',
             participantEmail: '',
           }));
         

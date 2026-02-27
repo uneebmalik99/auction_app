@@ -3,30 +3,30 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Home, Gavel, Heart, User } from 'lucide-react-native';
 import { appColors } from '../../../utils/appColors';
-import ClientHome from '../../../screens/client/clientHome/clientHome';
+import CustomerHome from '../../../screens/client/clientHome/clientHome';
 import MyBids from '../../../screens/client/myBids/myBids';
 import Favorites from '../../../screens/client/favorites/favorites';
 import Profile from '../../../screens/profile/profile';
 import screenNames from '../../routes';
 import { useI18n } from '../../../i18n';
 
-type ClientTabParamList = {
-  ClientHome: undefined;
+type CustomerTabParamList = {
+  CustomerHome: undefined;
   MyBids: undefined;
   Favorites: undefined;
   Profile: undefined;
 };
 
-const Tab = createBottomTabNavigator<ClientTabParamList>();
+const Tab = createBottomTabNavigator<CustomerTabParamList>();
 
-export default function ClientBottomTabs() {
+export default function CustomerBottomTabs() {
   const { t } = useI18n();
   return (
     <Tab.Navigator
       screenOptions={({
         route,
       }: {
-        route: { name: keyof ClientTabParamList };
+        route: { name: keyof CustomerTabParamList };
       }) => ({
         headerShown: false,
         tabBarStyle: {
@@ -48,7 +48,7 @@ export default function ClientBottomTabs() {
           focused: boolean;
         }) => {
           switch (route.name) {
-            case screenNames.clientHome:
+            case screenNames.customerHome:
               return <Home size={size} color={color} />;
             case screenNames.myBids:
               return <Gavel size={size} color={color} />;
@@ -62,8 +62,8 @@ export default function ClientBottomTabs() {
       })}
     >
       <Tab.Screen
-        name={screenNames.clientHome}
-        component={ClientHome}
+        name={screenNames.customerHome}
+        component={CustomerHome}
         options={{ title: t('bottomTab.home') }}
       />
       <Tab.Screen
