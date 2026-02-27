@@ -27,6 +27,9 @@ export type RootStackParamList = {
   UserDetails: { user?: User | null; userId?: string | null };
   AdminUsers: undefined;
   AdminInvoices: undefined;
+  BrokerChats: undefined;
+  BrokerInvoices: undefined;
+  BrokerAuctionItems: undefined;
 };
 
 export type RootNavigationProp = NativeStackNavigationProp<RootStackParamList>;

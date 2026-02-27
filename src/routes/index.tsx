@@ -19,6 +19,9 @@ import {
   UserDetailsScreen,
   AdminUsers,
   AdminInvoices,
+  BrokerChats,
+  BrokerInvoices,
+  BrokerAuctionItems,
 } from '../screens';
 import ClientBottomTabs from './bottomTabs/clientBottomTabs/clientBottomTabs';
 import AdminBottomTabs from './bottomTabs/adminBotttomTabs/adminBottomTabs';
@@ -218,6 +221,18 @@ export function RootNavigator() {
         <Stack.Screen
           name={screenNames.adminInvoices}
           component={AdminInvoices}
+        />
+        <Stack.Screen
+          name={screenNames.brokerChats}
+          component={BrokerChats}
+        />
+        <Stack.Screen
+          name={screenNames.brokerInvoices}
+          component={BrokerInvoices}
+        />
+        <Stack.Screen
+          name={screenNames.brokerAuctionItems}
+          component={BrokerAuctionItems}
         />
         </Stack.Navigator>
     </NavigationContainer>

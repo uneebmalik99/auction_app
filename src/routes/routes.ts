@@ -28,6 +28,8 @@ const screenNames = {
   adminChats: 'AdminChats',
   adminUsers: 'AdminUsers',
   adminInvoices: 'AdminInvoices',
+  brokerChats: 'BrokerChats',
+  brokerInvoices: 'BrokerInvoices',
 } as const;
 
 export default screenNames;

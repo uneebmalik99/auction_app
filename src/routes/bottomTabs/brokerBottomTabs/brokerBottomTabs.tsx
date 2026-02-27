@@ -7,19 +7,20 @@ import {
   Package,
   PlusCircle,
   User,
+  MessageCircle,
 } from 'lucide-react-native';
 import { appColors } from '../../../utils/appColors';
-import AdminHome from '../../../screens/admin/adminHome/adminHome';
-import AuctionItems from '../../../screens/admin/auctionItems/auctionItems';
-import AddAuctionItem from '../../../screens/admin/addAuctionItem/addAuctionItem';
 import Profile from '../../../screens/profile/profile';
 import screenNames from '../../routes';
 import { useI18n } from '../../../i18n';
 import BrokerHome from '../../../screens/broker/brokerHome/brokerHome';
+import BrokerAuctionItems from '../../../screens/broker/brokerAuctionItems/brokerAuctionItems';
+import BrokerChats from '../../../screens/broker/brokerChats/brokerChats';
 
 type BrokerTabParamList = {
   BrokerHome: undefined;
   BrokerAuctionItems: undefined;
+  BrokerChats: undefined;
   Profile: undefined;
 };
 
@@ -58,6 +59,8 @@ export default function BrokerBottomTabs() {
               return <Home size={size} color={color} />;
             case screenNames.brokerAuctionItems:
               return <Package size={size} color={color} />;
+            case screenNames.brokerChats:
+              return <MessageCircle size={size} color={color} />;
             case screenNames.profile:
             default:
               return <User size={size} color={color} />;
@@ -70,16 +73,16 @@ export default function BrokerBottomTabs() {
         component={BrokerHome}
         options={{ title: t('bottomTab.home') }}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name={screenNames.brokerAuctionItems}
         component={BrokerAuctionItems}
-        options={{ title: t('bottomTab.items') }}
-      /> */}
-      {/* <Tab.Screen
-        name="AddAuctionItem"
-        component={AddAuctionItem}
-        options={{ title: 'Add item' }}
-      /> */}
+        options={{ title: 'Vehicles' }}
+      />
+      <Tab.Screen
+        name="BrokerChats"
+        component={BrokerChats}
+        options={{ title: 'Chats' }}
+      />
       <Tab.Screen
         name={screenNames.profile}
         component={Profile}

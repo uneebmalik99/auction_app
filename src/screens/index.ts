@@ -17,6 +17,9 @@ import HelpSupport from './helpSupport/helpSupport';
 import Faqs from './faqs/faqs';
 import AdminUsers from './admin/adminUsers/adminUsers';
 import AdminInvoices from './admin/adminInvoices/adminInvoices';
+import BrokerChats from './broker/brokerChats/brokerChats';
+import BrokerInvoices from './broker/brokerInvoices/brokerInvoices';
+import BrokerAuctionItems from './broker/brokerAuctionItems/brokerAuctionItems';
 
 export {
   Authentication,
@@ -38,4 +41,7 @@ export {
   UserDetailsScreen,
   AdminUsers,
   AdminInvoices,
+  BrokerChats,
+  BrokerInvoices,
+  BrokerAuctionItems,
 };

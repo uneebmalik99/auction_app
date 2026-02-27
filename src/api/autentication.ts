@@ -1,8 +1,8 @@
 // Simple auth API helpers using fetch
 // Adjust API_BASE_URL and endpoint paths to match your backend.
 
-export const API_BASE_URL = 'http://192.168.18.144:3000/'; // TODO: replace
-// export const API_BASE_URL = 'http://151.247.196.129';
+// export const API_BASE_URL = 'http://192.168.18.144:3000/'; // TODO: replace
+export const API_BASE_URL = 'http://151.247.196.129';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getItem } from '../utils/methods';
 import { User } from '../utils/types';
