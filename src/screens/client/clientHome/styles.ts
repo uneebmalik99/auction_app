@@ -78,6 +78,35 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
     color: appColors.textSecondary,
   },
+  liveAuctionsHeader: {
+    marginBottom: height(2.5),
+    marginTop: height(1),
+  },
+  liveAuctionsHeaderTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: width(3),
+    marginBottom: height(0.8),
+  },
+  liveAuctionsIconBox: {
+    padding: width(2),
+    backgroundColor: appColors.primary + '33', // 20% opacity equivalent
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: appColors.primary + '4D', // 30% opacity equivalent
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  liveAuctionsTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: appColors.textPrimary,
+  },
+  liveAuctionsSubtitle: {
+    fontSize: 13,
+    color: appColors.textMuted,
+    marginLeft: width(14), // ml-14 equivalent (icon box + gap + icon size)
+  },
   emptyState: {
     flex: 1,
     justifyContent: 'center',
@@ -142,5 +171,34 @@ export const styles = StyleSheet.create({
   },
   cardRight: {
     alignItems: 'flex-end',
+  },
+  liveAuctionsHeader: {
+    marginBottom: height(2.5),
+    marginTop: height(1),
+  },
+  liveAuctionsHeaderTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: width(3),
+    marginBottom: height(0.8),
+  },
+  liveAuctionsIconBox: {
+    padding: width(2),
+    backgroundColor: appColors.primary + '33', // 20% opacity equivalent
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: appColors.primary + '4D', // 30% opacity equivalent
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  liveAuctionsTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: appColors.textPrimary,
+  },
+  liveAuctionsSubtitle: {
+    fontSize: 13,
+    color: appColors.textMuted,
+    marginLeft: width(14), // ml-14 equivalent (icon box + gap + icon size)
   },
 });

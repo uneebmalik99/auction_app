@@ -82,6 +82,7 @@ export interface AuctionItem {
   biddingEndsAt?: Date | string;
   description?: string;
   photos: string[];
+  videos?: string[];
   features: {
     adaptiveCruiseControl?: boolean;
     autoDimmingMirrors?: boolean;

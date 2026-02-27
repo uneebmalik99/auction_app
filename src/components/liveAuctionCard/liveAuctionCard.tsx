@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { WebView } from 'react-native-webview';
 import { Check, Clock, Calendar, Fuel, Gauge, Settings2, Eye, User } from 'lucide-react-native';
 import { AuctionItem } from '../../utils/types';
 import { appColors } from '../../utils/appColors';
@@ -44,19 +45,77 @@ export default function LiveAuctionCard({ item, onPress, onViewBidDetails }: Liv
   const currentBid = item.currentBid || item.startingPrice || 0;
   const bidAmount = typeof currentBid === 'number' ? currentBid : parseFloat(String(currentBid)) || 0;
 
+  // Check if video exists
+  const hasVideo = item.videos && Array.isArray(item.videos) && item.videos.length > 0;
+  const videoUrl = hasVideo && item.videos ? item.videos[0] : null;
+  const imageUrl = item.photos?.[0];
+
+  // HTML for autoplay video
+  const videoHTML = videoUrl ? `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            overflow: hidden;
+          }
+          video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        </style>
+      </head>
+      <body>
+        <video 
+          src="${videoUrl}" 
+          autoplay 
+          loop 
+          muted 
+          playsinline
+          style="width: 100%; height: 100%; object-fit: cover;"
+        ></video>
+      </body>
+    </html>
+  ` : '';
+
   return (
     <TouchableOpacity
       style={styles.card}
       activeOpacity={0.9}
       onPress={onPress}
     >
-      {/* Image Section */}
+      {/* Image/Video Section */}
       <View style={styles.imageContainer}>
-        {item.photos?.[0] ? (
-          <Image source={{ uri: item.photos[0] }} style={styles.image} />
+        {hasVideo && videoUrl ? (
+          <WebView
+            source={{ html: videoHTML }}
+            style={styles.video}
+            allowsInlineMediaPlayback={true}
+            mediaPlaybackRequiresUserAction={false}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            scrollEnabled={false}
+            bounces={false}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : imageUrl ? (
+          <Image source={{ uri: imageUrl }} style={styles.image} />
         ) : (
           <View style={[styles.image, styles.imagePlaceholder]}>
             <Text style={styles.placeholderText}>No Image</Text>
+          </View>
+        )}
+
+        {/* Video Badge */}
+        {hasVideo && (
+          <View style={styles.videoBadge}>
+            <Text style={styles.videoBadgeText}>VIDEO</Text>
           </View>
         )}
         
@@ -164,6 +223,11 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
   },
+  video: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#000',
+  },
   imagePlaceholder: {
     backgroundColor: appColors.inputBorder,
     justifyContent: 'center',
@@ -206,6 +270,21 @@ const styles = StyleSheet.create({
     color: appColors.white,
     fontSize: 12,
     fontWeight: '600',
+  },
+  videoBadge: {
+    position: 'absolute',
+    bottom: 12,
+    left: 12,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    zIndex: 1,
+  },
+  videoBadgeText: {
+    color: appColors.white,
+    fontSize: 10,
+    fontWeight: '700',
   },
   contentContainer: {
     padding: width(4),
