@@ -31,10 +31,13 @@ export function useAuctionBids({
 }: UseAuctionBidsOptions) {
   const user = useAppSelector(state => state.profile.user);
   const isFocused = useIsFocused();
-const [isBidSuccess, setIsBidSuccess] = useState(false);
+  const [isBidSuccess, setIsBidSuccess] = useState(false);
+  const [isSubmittingBid, setIsSubmittingBid] = useState(false);
   const [currentBid, setCurrentBid] = useState<number | undefined>(initialBid);
   const [bids, setBids] = useState<BidEntry[]>([]);
   const socketRef = useRef(getSocket());
+  const optimisticBidRef = useRef<string | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (!auctionId || !isFocused) {
@@ -93,13 +96,44 @@ const [isBidSuccess, setIsBidSuccess] = useState(false);
 
       if (newBids.length > 0) {
         setBids(prev => {
-          const existing = new Set(prev.map(b => b._id || b.id));
+          // Remove optimistic bid if it exists
+          const withoutOptimistic = prev.filter(
+            b => b.id !== optimisticBidRef.current && b._id !== optimisticBidRef.current
+          );
+          
+          // Add new bids, avoiding duplicates
+          const existing = new Set(withoutOptimistic.map(b => b._id || b.id));
           const filtered = newBids.filter(b => !existing.has(b._id || b.id));
-          return [...filtered, ...prev]; // newest first
+          
+          return [...filtered, ...withoutOptimistic]; // newest first
         });
 
         const highest = Math.max(...newBids.map(b => b.amount));
         setCurrentBid(prev => Math.max(prev || 0, highest));
+        
+        // Check if this update contains the user's bid (bid confirmation)
+        const userBid = newBids.find(
+          b => 
+            b.bidderId === user?.id?.toString() || 
+            b.bidderEmail === user?.email ||
+            (b.userId && b.userId === user?.id?.toString())
+        );
+        
+        if (userBid) {
+          // Clear optimistic bid ref since we got the real bid
+          optimisticBidRef.current = null;
+          
+          // Clear timeout if it exists
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+          }
+          
+          setIsBidSuccess(true);
+          setIsSubmittingBid(false);
+          // Reset success state after 3 seconds
+          setTimeout(() => setIsBidSuccess(false), 3000);
+        }
       }
     };
 
@@ -112,19 +146,55 @@ const [isBidSuccess, setIsBidSuccess] = useState(false);
 
       socket.off('bid_details_response', handleBidDetails);
       leaveAuctionRoom(auctionId);
+      
+      // Cleanup timeout if it exists
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
     };
   }, [auctionId, isFocused, initialBid]);
 
   const submitBid = (auctionId: string, newBidAmount: number) => {
+    console.log('submitBid called', { auctionId, newBidAmount, currentBid, user: !!user, connected: socketRef.current?.connected });
+    
+    // Set submitting state IMMEDIATELY for UI feedback (before validation)
+    setIsSubmittingBid(true);
+    setIsBidSuccess(false);
+
     if (!auctionId || !user || !socketRef.current?.connected) {
+      console.log('Validation failed: missing auctionId, user, or socket not connected');
       Alert.alert('Error', 'Not connected. Please try again.');
+      setIsSubmittingBid(false);
       return;
     }
 
     if (newBidAmount <= (currentBid ?? 0)) {
+      console.log('Validation failed: bid too low', { newBidAmount, currentBid });
       Alert.alert('Invalid Bid', 'Bid must be higher than current bid');
+      setIsSubmittingBid(false);
       return;
     }
+
+    // Optimistic update: Add the bid immediately to the UI
+    const optimisticBidId = `temp-${Date.now()}`;
+    optimisticBidRef.current = optimisticBidId;
+    
+    const optimisticBid: BidEntry = {
+      id: optimisticBidId,
+      _id: optimisticBidId,
+      amount: newBidAmount,
+      bidderId: user?.id?.toString() || '',
+      bidderName: user.name || '',
+      bidderEmail: user.email || '',
+      createdAt: new Date().toISOString(),
+      userId: user?.id?.toString(),
+      userName: user.name || '',
+    };
+
+    // Add optimistic bid to the list
+    setBids(prev => [optimisticBid, ...prev]);
+    setCurrentBid(newBidAmount);
 
     console.log('submitting bid', newBidAmount);
     console.log('auctionId', auctionId);
@@ -145,6 +215,14 @@ const [isBidSuccess, setIsBidSuccess] = useState(false);
       bidderName: user.name || '',
       bidderEmail: user.email || '',
     });
+
+    // Set a timeout to reset submitting state if no response after 10 seconds
+    timeoutRef.current = setTimeout(() => {
+      setIsSubmittingBid(false);
+      // Remove optimistic bid if it wasn't confirmed
+      setBids(prev => prev.filter(b => b.id !== optimisticBidId && b._id !== optimisticBidId));
+      optimisticBidRef.current = null;
+    }, 10000);
   };
 
   return {
@@ -152,6 +230,8 @@ const [isBidSuccess, setIsBidSuccess] = useState(false);
     bids,
     placeBid: submitBid,
     isConnected: socketRef.current?.connected,
+    isSubmittingBid,
+    isBidSuccess,
   };
 }
 

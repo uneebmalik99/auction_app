@@ -13,7 +13,7 @@ import { styles } from './styles';
 import { useAuctionBids } from '../../../hooks/useAuctionBids';
 import type { AuctionItem } from '../../../utils/types';
 import { useIsFocused } from '@react-navigation/native';
-import { formatRemainingTime } from '../../../utils/methods';
+import { formatRemainingTime, showSuccessToast } from '../../../utils/methods';
 import Swiper from 'react-native-swiper';
 import { useAppSelector } from '../../../redux/hooks';
 
@@ -36,7 +36,7 @@ export default function ItemDetails() {
 
   const bidAmountRef = useRef<number>(item?.startingPrice ?? 0);
 
-  const { currentBid, bids, placeBid } = useAuctionBids({
+  const { currentBid, bids, placeBid, isSubmittingBid, isBidSuccess } = useAuctionBids({
     auctionId: item?._id || (item as any)?.id || null,
     initialBid: item?.startingPrice ?? item?.currentBid ?? 0, // ← Use actual auction starting/current bid
   });
@@ -130,6 +130,13 @@ export default function ItemDetails() {
   useEffect(() => {
     bidAmountRef.current = bidAmount;
   }, [bidAmount]);
+
+  // Show success message when bid is confirmed
+  useEffect(() => {
+    if (isBidSuccess) {
+      showSuccessToast('Bid Placed Successfully!', 'Your bid has been placed and confirmed.');
+    }
+  }, [isBidSuccess]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -452,7 +459,12 @@ export default function ItemDetails() {
             step={step}
             currentBid={currentBid}
             startingPrice={item?.startingPrice}
-            onPlaceBid={amount => placeBid(auctionId ?? '', amount)}
+            onPlaceBid={amount => {
+              const idToUse = auctionId || item?._id || (item as any)?.id || '';
+              console.log('Placing bid with auctionId:', idToUse, 'amount:', amount);
+              placeBid(idToUse, amount);
+            }}
+            isSubmitting={isSubmittingBid}
           />
         ) : null}
       </ScrollView>

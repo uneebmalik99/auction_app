@@ -91,4 +91,32 @@ export const styles = StyleSheet.create({
     borderRadius: 999,
     backgroundColor: '#f97316',
   },
+  placingBidContainer: {
+    marginTop: height(1),
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: height(2),
+  },
+  placingBidContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingDots: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#f97316',
+    marginHorizontal: 3,
+  },
+  placingBidText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#f97316',
+  },
 });
