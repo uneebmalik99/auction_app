@@ -1,5 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, FlatList, SafeAreaView, Text, View } from 'react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { styles } from './sytles';
 import { Header, ItemCard } from '../../../components';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
@@ -10,6 +19,9 @@ import screenNames from '../../../routes/routes';
 import { AuctionItem, RootNavigationProp } from '../../../utils/types';
 import { handleFavorite } from '../../../api/favorites';
 import { getItem } from '../../../utils/methods';
+import { appColors } from '../../../utils/appColors';
+import { Heart, PlayCircle, Clock, X, Search } from 'lucide-react-native';
+import { height, width } from '../../../utils/dimensions';
 
 export default function Favorites() {
   const dispatch = useAppDispatch();
@@ -20,17 +32,30 @@ export default function Favorites() {
 
   const [items, setItems] = useState<AuctionItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  console.log('items', items);
-  console.log('favoriteIds', favoriteIds);
+  const favoriteItems = useMemo(() => {
+    const allItems = (items as any)?.vehicles || items || [];
+    return allItems.filter((item: any) =>
+      favoriteIds?.includes(item._id),
+    ) as AuctionItem[];
+  }, [items, favoriteIds]);
 
-  const favoriteItems = (items as any)?.vehicles?.filter((item: any) =>
-    favoriteIds?.includes(item._id),
-  );
-
-  console.log('favoriteItems', favoriteItems);
-  console.log('favoriteIds', favoriteIds);
+  // Calculate stats
+  const stats = useMemo(() => {
+    const live = favoriteItems.filter(
+      (item) => item.status === 'live',
+    ).length;
+    const upcoming = favoriteItems.filter(
+      (item) => item.status === 'upcoming',
+    ).length;
+    return {
+      total: favoriteItems.length,
+      live,
+      upcoming,
+    };
+  }, [favoriteItems]);
 
   const handleOpenItem = (item: AuctionItem) => {
     navigation.navigate(screenNames.itemDetails, {
@@ -39,16 +64,24 @@ export default function Favorites() {
     });
   };
 
+  const handleRemoveFavorite = async (item: AuctionItem) => {
+    try {
+      const token = await getItem<string>('auth_token');
+      const response = await handleFavorite(item._id, token || '');
+      dispatch(toggleFavorite(item._id));
+    } catch (err) {
+      console.error('Failed to remove favorite:', err);
+      setError('Failed to remove from favorites');
+    }
+  };
+
   const loadItems = async () => {
     try {
-      setLoading(true);
       setError(null);
-
-      const apiItems: AuctionItem[] = await fetchItems();
-      console.log('Favorites apiItems', apiItems);
-      setItems(apiItems ?? []);
+      const apiItems: any = await fetchItems();
+      const vehicles = apiItems?.vehicles || apiItems || [];
+      setItems(Array.isArray(vehicles) ? vehicles : []);
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error('Failed to load items', e);
       setError(
         e instanceof Error
@@ -57,6 +90,7 @@ export default function Favorites() {
       );
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -66,58 +100,149 @@ export default function Favorites() {
     }, []),
   );
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    void loadItems();
+  }, []);
+
+  if (loading && !refreshing) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <Header titleKey="favorites.title" showBackButton={false} />
+        <View style={styles.loadingContainer}>
+          <View style={styles.loadingSpinnerContainer}>
+            <ActivityIndicator size="large" color={appColors.favorite} />
+          </View>
+          <Text style={styles.loadingText}>Loading favorites...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <Header titleKey="favorites.title" showBackButton={false} />
 
-      {loading ? (
-        <Text style={styles.statusText}>Loading items...</Text>
-      ) : error ? (
-        <Text style={styles.statusText}>{error}</Text>
-      ) : (
-        <FlatList
-          data={favoriteItems}
-          keyExtractor={item => item._id}
-          contentContainerStyle={styles.contentContainer}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => {
-            const startTime = item.biddingStartsAt
-              ? Date.parse(item.biddingStartsAt)
-              : undefined;
-            const endTime = item.biddingEndsAt
-              ? Date.parse(item.biddingEndsAt)
-              : undefined;
-
-            return (
-              <ItemCard
-                item={item}
-                onPress={() => handleOpenItem(item)}
-                onToggleFavorite={async () => {
-                  const token = await getItem<string>('auth_token');
-                  const response = await handleFavorite(item._id, token || '');
-                  console.log('response', response);
-
-                  if (response.isFavorite) {
-                    dispatch(toggleFavorite(item._id));
-                  } else {
-                    dispatch(toggleFavorite(item._id));
-                    // Alert.alert('Error', 'Failed to add favorite');
-                  }
-                }}
-                isFavorite={favoriteIds.includes(item._id)}
-              />
-            );
-          }}
-          ListEmptyComponent={
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyTitle}>No favorites yet</Text>
-              <Text style={styles.emptySubtitle}>
-                Save auctions you love to quickly find them later.
-              </Text>
+      {/* Error Banner */}
+      {error && (
+        <View style={styles.errorBanner}>
+          <View style={styles.errorBannerContent}>
+            <View style={styles.errorBannerLeft}>
+              <View style={styles.errorIconContainer}>
+                <Text style={styles.errorIcon}>⚠</Text>
+              </View>
+              <Text style={styles.errorText}>{error}</Text>
             </View>
-          }
-        />
+            <TouchableOpacity
+              onPress={() => setError(null)}
+              style={styles.errorCloseButton}
+            >
+              <X size={20} color={appColors.red} />
+            </TouchableOpacity>
+          </View>
+        </View>
       )}
+
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[appColors.favorite]}
+            tintColor={appColors.favorite}
+          />
+        }
+      >
+        {/* Page Header */}
+        <View style={styles.headerContainer}>
+          <View style={styles.headerContent}>
+            <View style={styles.headerBadge}>
+              <Heart size={16} color={appColors.favorite} fill={appColors.favorite} />
+              <Text style={styles.headerBadgeText}>Your Collection</Text>
+            </View>
+            <Text style={styles.headerTitle}>Favorite Vehicles</Text>
+            <Text style={styles.headerSubtitle}>
+              Keep track of the vehicles you love. Quick access to your saved auctions.
+            </Text>
+          </View>
+
+          {/* Stats Bar */}
+          <View style={styles.statsContainer}>
+            <View style={styles.statCard}>
+              <View style={[styles.statIconContainer, styles.statIconRed]}>
+                <Heart size={18} color={appColors.favorite} fill={appColors.favorite} />
+              </View>
+              <View style={styles.statContent}>
+                <Text style={styles.statValue}>{stats.total}</Text>
+                <Text style={styles.statLabel}>Saved Vehicles</Text>
+              </View>
+            </View>
+            <View style={styles.statCard}>
+              <View style={[styles.statIconContainer, styles.statIconGreen]}>
+                <PlayCircle size={18} color={appColors.green} />
+              </View>
+              <View style={styles.statContent}>
+                <Text style={styles.statValue}>{stats.live}</Text>
+                <Text style={styles.statLabel}>Live Now</Text>
+              </View>
+            </View>
+            <View style={styles.statCard}>
+              <View style={[styles.statIconContainer, styles.statIconAmber]}>
+                <Clock size={18} color="#f59e0b" />
+              </View>
+              <View style={styles.statContent}>
+                <Text style={styles.statValue}>{stats.upcoming}</Text>
+                <Text style={styles.statLabel}>Upcoming</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* Favorites List */}
+        {favoriteItems.length > 0 ? (
+          <View style={styles.listContainer}>
+            <FlatList
+              data={favoriteItems}
+              keyExtractor={(item) => item._id}
+              contentContainerStyle={styles.contentContainer}
+              showsVerticalScrollIndicator={false}
+              scrollEnabled={false}
+              renderItem={({ item }) => {
+                return (
+                  <ItemCard
+                    item={item}
+                    onPress={() => handleOpenItem(item)}
+                    onToggleFavorite={() => handleRemoveFavorite(item)}
+                    isFavorite={favoriteIds.includes(item._id)}
+                  />
+                );
+              }}
+            />
+          </View>
+        ) : (
+          <View style={styles.emptyState}>
+            <View style={styles.emptyIconContainer}>
+              <View style={styles.emptyIconBackground} />
+              <Heart size={80} color={appColors.textMuted} />
+            </View>
+            <Text style={styles.emptyTitle}>No Favorites Yet</Text>
+            <Text style={styles.emptySubtitle}>
+              Start adding vehicles to your favorites by clicking the heart icon on any vehicle card
+            </Text>
+            <TouchableOpacity
+              style={styles.emptyButton}
+              onPress={() => navigation.navigate(screenNames.customerHome)}
+              activeOpacity={0.8}
+            >
+              <Search size={20} color={appColors.white} />
+              <Text style={styles.emptyButtonText}>Browse Auctions</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }

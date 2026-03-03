@@ -5,123 +5,198 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image,
+  ActivityIndicator,
+  RefreshControl,
+  ScrollView,
 } from 'react-native';
 import { styles } from './styles';
-import { Header, ItemCard, Tabs } from '../../../components';
+import { Header, Tabs } from '../../../components';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { fetchItems, fetchMyBidsItems } from '../../../api/items';
-import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { toggleFavorite } from '../../../redux/profileSlice';
+import { fetchMyBidsItems } from '../../../api/items';
+import { useAppSelector } from '../../../redux/hooks';
 import screenNames from '../../../routes/routes';
 import {
   AuctionItem,
   MyBidsTab,
   RootNavigationProp,
 } from '../../../utils/types';
-import { handleFavorite } from '../../../api/favorites';
-import { getItem } from '../../../utils/methods';
 import { myBidsTabs } from '../../../utils/data';
+import { appColors } from '../../../utils/appColors';
+import { FileText, DollarSign } from 'lucide-react-native';
+import { height, width } from '../../../utils/dimensions';
+
+interface BidItem {
+  id: string;
+  amount: number;
+  createdAt: string;
+  vehicle: AuctionItem;
+  auctionId: string;
+  auctionTitle: string;
+  auctionImage: string;
+}
 
 export default function MyBids() {
   const currentUser = useAppSelector(state => state.profile.user);
-  const favoriteIds = useAppSelector(
-    state => state.profile.user?.favorites ?? [],
-  );
   const navigation = useNavigation<RootNavigationProp>();
-  const dispatch = useAppDispatch();
 
   const [activeTab, setActiveTab] = useState<MyBidsTab>('active');
-  const [items, setItems] = useState<AuctionItem[]>([]);
+  const [myBids, setMyBids] = useState<BidItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleOpenItem = (item: AuctionItem) => {
-    console.log('item', item);
+  const handleOpenItem = (bid: BidItem) => {
     navigation.navigate(screenNames.itemDetails, {
-      myBids: true, // not my bids
-      auctionId: item._id,
-      item: item,
+      myBids: true,
+      auctionId: bid.auctionId || bid.vehicle?._id,
+      item: bid.vehicle,
     });
   };
 
-  const filteredItems = useMemo(() => {
-    const list = Array.isArray(items) ? items : [];
-    return list.filter(item => {
-      if (activeTab === 'active') {
-        return (item as any)?.vehicle?.status === 'live';
-      }
-
-      // auctioned
-      return (item as any)?.vehicle?.status === 'sold';
-    });
-  }, [items, activeTab]);
-
-  const loadItems = async () => {
+  const fetchMyBids = async () => {
     try {
       setLoading(true);
       setError(null);
+      const bidderId = currentUser?.id || currentUser?.email;
+      
+      if (!bidderId) {
+        setLoading(false);
+        return;
+      }
 
-      const apiItems: any = await fetchMyBidsItems(currentUser?.id || '');
-      console.log('My Bids apiItems', apiItems);
-      setItems(apiItems?.data ?? []);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to load items', e);
+      const data: any = await fetchMyBidsItems(bidderId);
+      
+      if (Array.isArray(data.data)) {
+        const allBids: BidItem[] = [];
+        const now = new Date();
+        
+        data.data.forEach((vehicleGroup: any) => {
+          if (vehicleGroup.bids && Array.isArray(vehicleGroup.bids)) {
+            vehicleGroup.bids.forEach((bid: any) => {
+              let vehicleStatus = vehicleGroup.vehicle?.status || 'upcoming';
+              
+              if (vehicleGroup.vehicle?.biddingEndsAt) {
+                const endTime = new Date(vehicleGroup.vehicle.biddingEndsAt);
+                const timeSinceEnd = now.getTime() - endTime.getTime();
+                const twoDaysInMs = 2 * 24 * 60 * 60 * 1000;
+                
+                if (timeSinceEnd > 0) {
+                  if (vehicleStatus === 'sold') {
+                    vehicleStatus = 'sold';
+                  } else if (timeSinceEnd > twoDaysInMs) {
+                    vehicleStatus = 'live';
+                  } else {
+                    vehicleStatus = 'pending';
+                  }
+                }
+              }
+              
+              allBids.push({
+                ...bid,
+                vehicle: {
+                  ...vehicleGroup.vehicle,
+                  status: vehicleStatus,
+                },
+                auctionId: vehicleGroup.vehicle?.id || vehicleGroup.vehicle?._id,
+                auctionTitle: vehicleGroup.vehicle?.title || 
+                             `${vehicleGroup.vehicle?.year} ${vehicleGroup.vehicle?.make} ${vehicleGroup.vehicle?.model}`,
+                auctionImage: vehicleGroup.vehicle?.photos?.[0] || '',
+              });
+            });
+          }
+        });
+        
+        setMyBids(allBids);
+      }
+    } catch (err) {
+      console.error('Failed to load my bids', err);
       setError(
-        e instanceof Error
-          ? e.message
-          : 'Unable to load items. Please try again.',
+        err instanceof Error
+          ? err.message
+          : 'Unable to load bids. Please try again.',
       );
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
+  const filteredBids = useMemo(() => {
+    return myBids.filter(bid => {
+      if (activeTab === 'active') {
+        return bid.vehicle?.status === 'live' || bid.vehicle?.status === 'upcoming';
+      }
+      // purchased/sold
+      return bid.vehicle?.status === 'sold';
+    });
+  }, [myBids, activeTab]);
+
   useFocusEffect(
     useCallback(() => {
-      void loadItems();
-    }, []),
+      void fetchMyBids();
+    }, [currentUser]),
   );
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    void fetchMyBids();
+  }, []);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'live':
+        return { bg: appColors.green + '20', text: appColors.green, border: appColors.green + '30' };
+      case 'sold':
+        return { bg: appColors.textMuted + '20', text: appColors.textMuted, border: appColors.textMuted + '30' };
+      case 'pending':
+        return { bg: '#f59e0b20', text: '#f59e0b', border: '#f59e0b30' };
+      default:
+        return { bg: appColors.primary + '20', text: appColors.primary, border: appColors.primary + '30' };
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'live':
+        return 'Live';
+      case 'sold':
+        return 'Sold';
+      case 'pending':
+        return 'Pending';
+      default:
+        return 'Upcoming';
+    }
+  };
+
+  if (loading && !refreshing) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <Header titleKey="myBids.title" showBackButton={false} />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={appColors.primary} />
+          <Text style={styles.loadingText}>Loading your bids...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <Header titleKey="myBids.title" showBackButton={false} />
 
-      {/* <View style={styles.tabsContainer}>
-        <TouchableOpacity
-          style={[
-            styles.tabButton,
-            activeTab === 'active' && styles.tabButtonActive,
-          ]}
-          onPress={() => setActiveTab('active')}
-        >
-          <Text
-            style={[
-              styles.tabLabel,
-              activeTab === 'active' && styles.tabLabelActive,
-            ]}
-          >
-            Active bids
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[
-            styles.tabButton,
-            activeTab === 'purchased' && styles.tabButtonActive,
-          ]}
-          onPress={() => setActiveTab('purchased')}
-        >
-          <Text
-            style={[
-              styles.tabLabel,
-              activeTab === 'purchased' && styles.tabLabelActive,
-            ]}
-          >
-            Purchased
-          </Text>
-        </TouchableOpacity>
-      </View> */}
+      {/* Stats Bar */}
+      <View style={styles.statsContainer}>
+        <View style={styles.statCard}>
+          <View style={styles.statIconContainer}>
+            <FileText size={20} color={appColors.primary} />
+          </View>
+          <View style={styles.statContent}>
+            <Text style={styles.statValue}>{myBids.length}</Text>
+            <Text style={styles.statLabel}>Total Bids</Text>
+          </View>
+        </View>
+      </View>
 
       <Tabs
         tabs={myBidsTabs}
@@ -130,63 +205,92 @@ export default function MyBids() {
       />
 
       <FlatList
-        data={filteredItems}
-        keyExtractor={item => item._id}
+        data={filteredBids}
+        keyExtractor={(item, index) => item.id || `bid-${index}`}
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => {
-          const vehicle = (item as any)?.vehicle;
-          if (!vehicle) {
-            return null;
-          }
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[appColors.primary]}
+            tintColor={appColors.primary}
+          />
+        }
+        renderItem={({ item: bid }) => {
+          const statusColors = getStatusColor(bid.vehicle?.status || 'upcoming');
+          const statusLabel = getStatusLabel(bid.vehicle?.status || 'upcoming');
+          
           return (
-            <ItemCard
-              item={vehicle}
-              onPress={() => handleOpenItem(vehicle)}
-              onToggleFavorite={async () => {
-                const token = await getItem<string>('auth_token');
-                const response = await handleFavorite(
-                  vehicle?.id || '',
-                  token || '',
-                );
-                console.log('response', response);
-
-                if (response.isFavorite) {
-                  dispatch(toggleFavorite(vehicle?.id || ''));
-                } else {
-                  dispatch(toggleFavorite(vehicle?.id || ''));
-                }
-              }}
-              isFavorite={favoriteIds.includes(vehicle?.id || '')}
-              messageChildren={
-               activeTab === 'purchased' && (
-        <TouchableOpacity 
-          style={styles.chatButton}
-          onPress={() => {
-            navigation.navigate(screenNames.chatScreen, {
-              vehicleId: vehicle?._id || '',
-              vehicleTitle: vehicle?.title || '',
-            });
-            console.log('vehicle', vehicle, screenNames.chatScreen);
-          }}
-        >
-          <Text style={styles.chatButtonText}>Message Admin</Text>
-        </TouchableOpacity>
-      )}
-              
-            />
+            <TouchableOpacity
+              style={styles.bidCard}
+              onPress={() => handleOpenItem(bid)}
+              activeOpacity={0.8}
+            >
+              <View style={styles.bidCardContent}>
+                {bid.auctionImage && (
+                  <Image
+                    source={{ uri: bid.auctionImage }}
+                    style={styles.bidImage}
+                    resizeMode="cover"
+                  />
+                )}
+                <View style={styles.bidInfo}>
+                  <View style={styles.bidHeader}>
+                    <View style={styles.bidTitleContainer}>
+                      <Text style={styles.bidTitle} numberOfLines={2}>
+                        {bid.auctionTitle}
+                      </Text>
+                      {bid.vehicle && (
+                        <Text style={styles.bidVehicleInfo}>
+                          {bid.vehicle.year} {bid.vehicle.make} {bid.vehicle.model}
+                        </Text>
+                      )}
+                    </View>
+                    <View style={styles.bidAmountContainer}>
+                      <Text style={styles.bidAmount}>
+                        ${bid.amount.toLocaleString()}
+                      </Text>
+                      <Text style={styles.bidDate}>
+                        {new Date(bid.createdAt).toLocaleDateString()} {new Date(bid.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={styles.bidFooter}>
+                    <View style={[styles.statusBadge, { backgroundColor: statusColors.bg, borderColor: statusColors.border }]}>
+                      <Text style={[styles.statusText, { color: statusColors.text }]}>
+                        {statusLabel}
+                      </Text>
+                    </View>
+                    {bid.vehicle && (
+                      <View style={styles.currentBidContainer}>
+                        <DollarSign size={16} color={appColors.textMuted} />
+                        <Text style={styles.currentBidLabel}>
+                          Current Bid: <Text style={styles.currentBidValue}>
+                            ${(bid.vehicle.currentBid || bid.vehicle.startingPrice || 0).toLocaleString()}
+                          </Text>
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
           );
         }}
         ListEmptyComponent={
           <View style={styles.emptyState}>
+            <View style={styles.emptyIconContainer}>
+              <FileText size={64} color={appColors.textMuted} />
+            </View>
             <Text style={styles.emptyTitle}>
               {activeTab === 'active'
-                ? 'No active bids yet'
+                ? 'No bids placed yet'
                 : 'No purchases yet'}
             </Text>
             <Text style={styles.emptySubtitle}>
               {activeTab === 'active'
-                ? 'Start bidding on auctions to see them here.'
+                ? 'Start bidding on live auctions to see your bid history here'
                 : 'Once you win and complete payment, your purchases will show up here.'}
             </Text>
           </View>

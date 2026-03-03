@@ -67,9 +67,7 @@ export const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   sectionHeaderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
     marginBottom: height(1.5),
     marginTop: height(1),
   },
@@ -77,6 +75,11 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: appColors.textSecondary,
+  },
+  sectionSubtitle: {
+    fontSize: 12,
+    color: appColors.textMuted,
+    marginTop: height(0.5),
   },
   liveAuctionsHeader: {
     marginBottom: height(2.5),

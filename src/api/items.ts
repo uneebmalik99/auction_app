@@ -75,10 +75,17 @@ export async function fetchItems(
 
 export async function fetchMyBidsItems(
   bidderId: string | number,
-): Promise<AuctionItem[]> {
-  return request<AuctionItem[]>(`api/bids?bidderId=${bidderId}`, {
+): Promise<any> {
+  const token = await getItem<string>('auth_token');
+  const authHeaders: Record<string, string> = {};
+  if (token) {
+    authHeaders.Authorization = `Bearer ${token}`;
+  }
+
+  return request<any>(`api/bids?bidderId=${encodeURIComponent(bidderId)}&limit=100&sort=desc`, {
     headers: {
       'Content-Type': 'application/json',
+      ...authHeaders,
     },
     method: 'GET',
   });

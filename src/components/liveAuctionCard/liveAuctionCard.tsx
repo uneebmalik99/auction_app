@@ -53,20 +53,31 @@ export default function LiveAuctionCard({ item, onPress, onViewBidDetails }: Liv
   // HTML for autoplay video
   const videoHTML = videoUrl ? `
     <!DOCTYPE html>
-    <html>
+    <html style="margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
         <style>
-          body {
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          html, body {
+            width: 100%;
+            height: 100%;
             margin: 0;
             padding: 0;
             background: #000;
             overflow: hidden;
+            position: fixed;
           }
           video {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
           }
         </style>
       </head>
@@ -77,7 +88,7 @@ export default function LiveAuctionCard({ item, onPress, onViewBidDetails }: Liv
           loop 
           muted 
           playsinline
-          style="width: 100%; height: 100%; object-fit: cover;"
+          style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"
         ></video>
       </body>
     </html>
@@ -103,6 +114,9 @@ export default function LiveAuctionCard({ item, onPress, onViewBidDetails }: Liv
             bounces={false}
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
+            scalesPageToFit={true}
+            contentInsetAdjustmentBehavior="never"
+            automaticallyAdjustContentInsets={false}
           />
         ) : imageUrl ? (
           <Image source={{ uri: imageUrl }} style={styles.image} />

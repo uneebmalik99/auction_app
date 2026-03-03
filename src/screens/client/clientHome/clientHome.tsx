@@ -595,40 +595,43 @@ export default function CustomerHome() {
         )}
 
         {/* Upcoming Auctions Section */}
-        {upcomingAuctions.length > 0 && (
-          <>
-            <View style={[styles.sectionHeaderRow, { marginTop: height(3) }]}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <Clock size={20} color={appColors.textSecondary} />
-                <Text style={styles.sectionTitle}>Upcoming Auctions</Text>
-              </View>
-            </View>
+        <View style={[styles.sectionHeaderRow, { marginTop: height(3) }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Clock size={20} color={appColors.textSecondary} />
+            <Text style={styles.sectionTitle}>Upcoming Auctions</Text>
+          </View>
+          {upcomingAuctions.length > 0 && (
+            <Text style={[styles.sectionSubtitle, { marginLeft: width(11) }]}>
+              {upcomingAuctions.length} upcoming {upcomingAuctions.length === 1 ? 'auction' : 'auctions'}
+            </Text>
+          )}
+        </View>
 
-            <FlatList
-              data={upcomingAuctions}
-              keyExtractor={item => item._id}
-              horizontal={false}
-              scrollEnabled={false}
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.listContent}
-              renderItem={({ item }) => {
-                return (
-                  <View style={{ marginBottom: height(2), width: '100%', alignItems: 'center' }}>
-                    <UpcomingAuctionCard
-                      item={item}
-                      onPress={() => handleOpenItem(item)}
-                    />
-                  </View>
-                );
-              }}
-              ListEmptyComponent={
-                <View style={styles.emptyState}>
-                  <Text style={styles.emptyTitle}>No upcoming auctions</Text>
+        {upcomingAuctions.length > 0 ? (
+          <FlatList
+            data={upcomingAuctions}
+            keyExtractor={item => item._id}
+            horizontal={false}
+            scrollEnabled={false}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.listContent}
+            renderItem={({ item }) => {
+              return (
+                <View style={{ marginBottom: height(2), width: '100%', alignItems: 'center' }}>
+                  <UpcomingAuctionCard
+                    item={item}
+                    onPress={() => handleOpenItem(item)}
+                  />
                 </View>
-              }
-            />
-          </>
+              );
+            }}
+          />
+        ) : (
+          <View style={[styles.emptyState, { paddingVertical: height(4), paddingHorizontal: width(6) }]}>
+            <Text style={styles.emptyTitle}>No upcoming auctions at the moment</Text>
+            <Text style={[styles.emptySubtitle, { marginTop: height(1) }]}>Check back soon for new auctions!</Text>
+          </View>
         )}
       </ScrollView>
     </SafeAreaView>
