@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft } from 'lucide-react-native';
+import { ArrowLeft, ArrowRight } from 'lucide-react-native';
 import { styles } from './styles';
 import type { RootNavigationProp } from '../../utils/types';
 import { appColors } from '../../utils/appColors';
@@ -22,7 +22,7 @@ export default function Header({
 }: HeaderProps) {
   const navigation = useNavigation<RootNavigationProp>();
   const canGoBack = navigation.canGoBack();
-  const { t } = useI18n();
+  const { t, isRTL } = useI18n();
 
   const resolvedTitle = titleKey ? t(titleKey) : title ?? '';
 
@@ -35,20 +35,20 @@ export default function Header({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isRTL && styles.containerRTL]}>
       {showBackButton && canGoBack ? (
         <TouchableOpacity
           style={styles.backButton}
           activeOpacity={0.8}
           onPress={handleBack}
         >
-          <ArrowLeft size={20} color={appColors.textPrimary} />
+         {isRTL ? <ArrowRight size={20} color={appColors.textPrimary} /> : <ArrowLeft size={20} color={appColors.textPrimary} />}
         </TouchableOpacity>
       ) : (
         <View style={styles.backButtonPlaceholder} />
       )}
 
-      <Text style={styles.title} numberOfLines={1}>
+      <Text style={[styles.title, isRTL && styles.titleRTL]} numberOfLines={1}>
         {resolvedTitle}
       </Text>
 

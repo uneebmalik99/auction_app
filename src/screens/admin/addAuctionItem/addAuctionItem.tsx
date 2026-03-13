@@ -65,8 +65,9 @@ import {
   Play,
 } from 'lucide-react-native';
 import { appColors } from '../../../utils/appColors';
-import DocumentPicker from 'react-native-document-picker';
+import { pick, types,  } from '@react-native-documents/picker';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { useI18n } from '../../../i18n';
 
 // Vehicle Condition Types
 export type VehicleCondition = 'excellent' | 'good' | 'fair' | 'damage';
@@ -78,32 +79,7 @@ interface ConditionOption {
   description: string;
 }
 
-const CONDITION_OPTIONS: ConditionOption[] = [
-  {
-    id: 'excellent',
-    label: 'Excellent',
-    color: '#10B981',
-    description: 'No issues, pristine condition',
-  },
-  {
-    id: 'good',
-    label: 'Good',
-    color: '#3B82F6',
-    description: 'Minor wear, fully functional',
-  },
-  {
-    id: 'fair',
-    label: 'Fair',
-    color: '#F59E0B',
-    description: 'Noticeable wear, works fine',
-  },
-  {
-    id: 'damage',
-    label: 'Damage',
-    color: '#EF4444',
-    description: 'Has visible damage/issues',
-  },
-];
+// CONDITION_OPTIONS will be created inside component to use translations
 
 interface DamageReport {
   x: number;
@@ -120,12 +96,40 @@ interface ExtendedAuctionItem extends AuctionItem {
 }
 
 export default function AddAuctionItem() {
+  const { t } = useI18n();
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const editItem = (route.params?.item ?? null) as
     | (AuctionItem & { _id: string })
     | null;
   const isEdit = route.params?.mode === 'edit' && !!editItem;
+
+  const CONDITION_OPTIONS: ConditionOption[] = [
+    {
+      id: 'excellent',
+      label: t('addAuction.condition.excellent'),
+      color: '#10B981',
+      description: t('addAuction.condition.excellentDesc'),
+    },
+    {
+      id: 'good',
+      label: t('addAuction.condition.good'),
+      color: '#3B82F6',
+      description: t('addAuction.condition.goodDesc'),
+    },
+    {
+      id: 'fair',
+      label: t('addAuction.condition.fair'),
+      color: '#F59E0B',
+      description: t('addAuction.condition.fairDesc'),
+    },
+    {
+      id: 'damage',
+      label: t('addAuction.condition.damage'),
+      color: '#EF4444',
+      description: t('addAuction.condition.damageDesc'),
+    },
+  ];
 
   const { images, pickImages, removeImage, clearImages, setImagesFromUris } =
     useImagePicker({
@@ -333,10 +337,10 @@ export default function AddAuctionItem() {
         }));
 
         lastDecodedVinRef.current = vin;
-        showSuccessToast('Auto-filled from VIN', 'Vehicle details were filled automatically.');
+        showSuccessToast(t('addAuction.autoFilledFromVin'), t('addAuction.autoFilledMessage'));
       } catch (e) {
         showErrorToast(
-          'VIN lookup failed',
+          t('addAuction.vinLookupFailed'),
           e instanceof Error ? e.message : 'Unable to decode VIN.',
         );
       } finally {
@@ -389,16 +393,16 @@ export default function AddAuctionItem() {
     const minIncrement = toNumber(form.minimumBidIncrement);
 
     if (!Number.isFinite(startingPrice) || startingPrice <= 0) {
-      errors.startingPrice = 'Valid starting price required';
+      errors.startingPrice = t('addAuction.validStartingPriceRequired');
     }
     if (!Number.isFinite(minIncrement) || minIncrement <= 0) {
-      errors.minimumBidIncrement = 'Valid minimum bid increment required';
+      errors.minimumBidIncrement = t('addAuction.validMinimumBidRequired');
     }
     if (!form.biddingStartsAt) {
-      errors.biddingStartsAt = 'Bidding start date required';
+      errors.biddingStartsAt = t('addAuction.biddingStartDateRequired');
     }
     if (!form.biddingEndsAt) {
-      errors.biddingEndsAt = 'Bidding end date required';
+      errors.biddingEndsAt = t('addAuction.biddingEndDateRequired');
     }
 
     setValidationErrors(errors);
@@ -407,11 +411,11 @@ export default function AddAuctionItem() {
 
   const validateStep2 = () => {
     const errors: Record<string, string> = {};
-    if (!hasText(form.title)) errors.title = 'Title required';
-    if (!hasText(form.make)) errors.make = 'Make required';
-    if (!hasText(form.model)) errors.model = 'Model required';
+    if (!hasText(form.title)) errors.title = t('addAuction.titleRequired');
+    if (!hasText(form.make)) errors.make = t('addAuction.makeRequired');
+    if (!hasText(form.model)) errors.model = t('addAuction.modelRequired');
     const year = toNumber(form.year);
-    if (!(Number.isFinite(year) && year >= 1900)) errors.year = 'Valid year required';
+    if (!(Number.isFinite(year) && year >= 1900)) errors.year = t('addAuction.validYearRequired');
     const vin = String(form.vin ?? '').trim();
     if (vin.length !== 17) errors.vin = 'VIN must be 17 characters';
 
@@ -424,10 +428,10 @@ export default function AddAuctionItem() {
     const mileage = toNumber(form.mileage);
     
     if (!(Number.isFinite(mileage) && mileage >= 0)) {
-      errors.mileage = 'Valid mileage required';
+      errors.mileage = t('addAuction.validMileageRequired');
     }
-    if (!hasText(form.color)) errors.color = 'Color required';
-    if (!hasText(form.location)) errors.location = 'Location required';
+    if (!hasText(form.color)) errors.color = t('addAuction.colorRequired');
+    if (!hasText(form.location)) errors.location = t('addAuction.locationRequired');
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
@@ -436,7 +440,7 @@ export default function AddAuctionItem() {
   const validateStep4 = () => {
     const errors: Record<string, string> = {};
     if (!hasText(form.registrationCity)) {
-      errors.registrationCity = 'Registration city required';
+      errors.registrationCity = t('addAuction.registrationCityRequired');
     }
 
     setValidationErrors(errors);
@@ -461,7 +465,7 @@ export default function AddAuctionItem() {
   const validateStep8 = () => {
     const errors: Record<string, string> = {};
     if (!form.vehicleCondition) {
-      errors.vehicleCondition = 'Please select vehicle condition';
+      errors.vehicleCondition = t('addAuction.selectVehicleCondition');
     }
 
     setValidationErrors(errors);
@@ -471,7 +475,7 @@ export default function AddAuctionItem() {
   const validateStep9 = () => {
     const errors: Record<string, string> = {};
     if (!images.length) {
-      errors.photos = 'At least one photo required';
+      errors.photos = t('addAuction.atLeastOnePhotoRequired');
     }
 
     setValidationErrors(errors);
@@ -480,17 +484,17 @@ export default function AddAuctionItem() {
 
   const steps = useMemo(
     () => [
-      { key: 1 as const, label: 'Auction Info', Icon: Gavel },
-      { key: 2 as const, label: 'Basic Info', Icon: FileText },
-      { key: 3 as const, label: 'Vehicle Details', Icon: Car },
-      { key: 4 as const, label: 'Seller Info', Icon: CheckCircle },
-      { key: 5 as const, label: 'Media', Icon: Upload },
-      { key: 6 as const, label: 'Documents', Icon: FileText },
-      { key: 7 as const, label: 'Features', Icon: Settings },
-      { key: 8 as const, label: 'Condition', Icon: BarChart3 },
-      { key: 9 as const, label: 'Photos', Icon: Upload },
+      { key: 1 as const, label: t('addAuction.step1Label'), Icon: Gavel },
+      { key: 2 as const, label: t('addAuction.step2Label'), Icon: FileText },
+      { key: 3 as const, label: t('addAuction.step3Label'), Icon: Car },
+      { key: 4 as const, label: t('addAuction.step4Label'), Icon: CheckCircle },
+      { key: 5 as const, label: t('addAuction.step5Label'), Icon: Upload },
+      { key: 6 as const, label: t('addAuction.step6Label'), Icon: FileText },
+      { key: 7 as const, label: t('addAuction.step7Label'), Icon: Settings },
+      { key: 8 as const, label: t('addAuction.step8Label'), Icon: BarChart3 },
+      { key: 9 as const, label: t('addAuction.step9Label'), Icon: Upload },
     ],
-    [],
+    [t],
   );
 
   const progress = (step - 1) / (steps.length - 1);
@@ -535,7 +539,7 @@ export default function AddAuctionItem() {
         !hasText(form.registrationCity) ||
         !images.length
       ) {
-        showInfoToast('Validation Error', 'Please complete all required fields.');
+        showInfoToast(t('addAuction.validationError'), t('addAuction.completeAllFields'));
         return;
       }
 
@@ -579,10 +583,10 @@ export default function AddAuctionItem() {
       // Uncomment when API is ready
       if (isEdit && editItem?._id) {
         await updateAuctionItem(editItem._id, payload, images);
-        showSuccessToast('Auction updated successfully');
+        showSuccessToast(t('addAuction.auctionUpdated'));
       } else {
         try {await createAuctionItem(payload, images);
-        showSuccessToast('Auction created successfully');
+        showSuccessToast(t('addAuction.auctionCreated'));
            navigation.dispatch(
         CommonActions.reset({
           index: 0,
@@ -655,7 +659,7 @@ export default function AddAuctionItem() {
     }
 
     if (!isValid) {
-      showInfoToast('Validation', 'Please fill all required fields.');
+      showInfoToast(t('addAuction.validationError'), t('addAuction.fillAllRequiredFields'));
       return;
     }
 
@@ -717,11 +721,11 @@ export default function AddAuctionItem() {
           if (response.didCancel) {
             console.log('User cancelled video selection');
           } else if (response.errorCode) {
-            showErrorToast('Error', response.errorMessage || 'Failed to pick video');
+            showErrorToast(t('addAuction.error'), response.errorMessage || t('addAuction.failedToPickVideo'));
           } else if (response.assets && response.assets[0]) {
             const video = response.assets[0];
             if (video.fileSize && video.fileSize > 100 * 1024 * 1024) {
-              showErrorToast('Error', 'Video size must be less than 100MB');
+              showErrorToast(t('addAuction.error'), t('addAuction.videoSizeLimit'));
               return;
             }
             setForm(prev => ({
@@ -729,12 +733,12 @@ export default function AddAuctionItem() {
               videoUri: video.uri,
             }));
             setIsDirty(true);
-            showSuccessToast('Success', 'Video selected');
+            showSuccessToast(t('addAuction.success'), t('addAuction.videoSelected'));
           }
         }
       );
     } catch (error) {
-      showErrorToast('Error', 'Failed to pick video');
+      showErrorToast(t('addAuction.error'), t('addAuction.failedToPickVideo'));
     }
   };
 
@@ -748,8 +752,8 @@ export default function AddAuctionItem() {
 
   const pickDocuments = async () => {
     try {
-      const results = await DocumentPicker.pick({
-        type: [DocumentPicker.types.pdf, DocumentPicker.types.images, DocumentPicker.types.doc, DocumentPicker.types.docx],
+      const results = await pick({
+        type: [types.pdf, types.images, types.doc, types.docx],
         allowMultiSelection: true,
       });
 
@@ -760,13 +764,9 @@ export default function AddAuctionItem() {
 
       setUploadedDocuments(prev => [...prev, ...newDocs]);
       setIsDirty(true);
-      showSuccessToast('Success', `${results.length} document(s) selected`);
+      showSuccessToast(t('addAuction.success'), `${results.length} ${t('addAuction.documentsSelected')}`);
     } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        console.log('User cancelled document selection');
-      } else {
-        showErrorToast('Error', 'Failed to pick documents');
-      }
+      showErrorToast(t('addAuction.error'), t('addAuction.failedToPickDocuments'));
     }
   };
 
@@ -787,19 +787,19 @@ export default function AddAuctionItem() {
           if (response.didCancel) {
             console.log('User cancelled media image selection');
           } else if (response.errorCode) {
-            showErrorToast('Error', response.errorMessage || 'Failed to pick images');
+            showErrorToast(t('addAuction.error'), response.errorMessage || t('addAuction.failedToPickImages'));
           } else if (response.assets) {
             const newImages = response.assets.map(asset => ({
               uri: asset.uri || '',
             }));
             setUploadedMediaImages(prev => [...prev.slice(0, 10 - newImages.length), ...newImages].slice(0, 10));
             setIsDirty(true);
-            showSuccessToast('Success', `${newImages.length} image(s) selected`);
+            showSuccessToast(t('addAuction.success'), `${newImages.length} ${t('addAuction.imagesSelected')}`);
           }
         }
       );
     } catch (error) {
-      showErrorToast('Error', 'Failed to pick images');
+      showErrorToast(t('addAuction.error'), t('addAuction.failedToPickImages'));
     }
   };
 
@@ -810,15 +810,15 @@ export default function AddAuctionItem() {
 
   const getStepTitle = (): string => {
     const titles: Record<number, string> = {
-      1: 'Auction Information',
-      2: 'Basic Information',
-      3: 'Vehicle Details',
-      4: 'Seller Information',
-      5: 'Media Upload',
-      6: 'Documents',
-      7: 'Vehicle Features',
-      8: 'Vehicle Condition',
-      9: 'Photos & Review',
+      1: t('addAuction.step1Title'),
+      2: t('addAuction.step2Title'),
+      3: t('addAuction.step3Title'),
+      4: t('addAuction.step4Title'),
+      5: t('addAuction.step5Title'),
+      6: t('addAuction.step6Title'),
+      7: t('addAuction.step7Title'),
+      8: t('addAuction.step8Title'),
+      9: t('addAuction.step9Title'),
     };
     return titles[step];
   };
@@ -826,7 +826,7 @@ export default function AddAuctionItem() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Header
-        title={isEdit ? 'Edit Auction Item' : 'Add Auction Item'}
+        title={isEdit ? t('addAuction.editTitle') : t('addAuction.addTitle')}
         showBackButton
         onBackPress={goBack}
       />
@@ -839,7 +839,7 @@ export default function AddAuctionItem() {
       >
         <Text style={styles.wizardTitle}>{getStepTitle()}</Text>
         <Text style={styles.wizardSubtitle}>
-          Step {step} of {steps.length}
+          {t('addAuction.step')} {step} {t('addAuction.of')} {steps.length}
         </Text>
 
         <View style={styles.stepperWrap}>
@@ -859,7 +859,7 @@ export default function AddAuctionItem() {
             <Input
               label={
                 <Text>
-                  Starting Price <Text style={styles.requiredStar}>*</Text>
+                  {t('addAuction.startingPrice')} <Text style={styles.requiredStar}>*</Text>
                 </Text>
               }
               placeholder="e.g. 50000"
@@ -873,7 +873,7 @@ export default function AddAuctionItem() {
             <Input
               label={
                 <Text>
-                  Minimum Bid Increment <Text style={styles.requiredStar}>*</Text>
+                  {t('addAuction.minimumBidIncrement')} <Text style={styles.requiredStar}>*</Text>
                 </Text>
               }
               placeholder="e.g. 500"
@@ -889,10 +889,10 @@ export default function AddAuctionItem() {
               <Input
                 label={
                   <Text>
-                    Bidding Starts At <Text style={styles.requiredStar}>*</Text>
+                    {t('addAuction.biddingStartsAt')} <Text style={styles.requiredStar}>*</Text>
                   </Text>
                 }
-                placeholder="Select date & time"
+                placeholder={t('addAuction.selectDateTime')}
                 value={formatDateTime(form.biddingStartsAt)}
                 editable={false}
                 pointerEvents="none"
@@ -904,10 +904,10 @@ export default function AddAuctionItem() {
               <Input
                 label={
                   <Text>
-                    Bidding Ends At <Text style={styles.requiredStar}>*</Text>
+                    {t('addAuction.biddingEndsAt')} <Text style={styles.requiredStar}>*</Text>
                   </Text>
                 }
-                placeholder="Select date & time"
+                placeholder={t('addAuction.selectDateTime')}
                 value={formatDateTime(form.biddingEndsAt)}
                 editable={false}
                 pointerEvents="none"
@@ -923,7 +923,7 @@ export default function AddAuctionItem() {
             <Input
               label={
                 <Text>
-                  Title <Text style={styles.requiredStar}>*</Text>
+                  {t('addAuction.title')} <Text style={styles.requiredStar}>*</Text>
                 </Text>
               }
               value={form.title}
@@ -934,7 +934,7 @@ export default function AddAuctionItem() {
             <Input
               label={
                 <Text>
-                  Make <Text style={styles.requiredStar}>*</Text>
+                  {t('addAuction.make')} <Text style={styles.requiredStar}>*</Text>
                 </Text>
               }
               placeholder="e.g. Toyota"
@@ -945,7 +945,7 @@ export default function AddAuctionItem() {
             <Input
               label={
                 <Text>
-                  Model <Text style={styles.requiredStar}>*</Text>
+                  {t('addAuction.model')} <Text style={styles.requiredStar}>*</Text>
                 </Text>
               }
               placeholder="e.g. Corolla"
@@ -956,7 +956,7 @@ export default function AddAuctionItem() {
             <Input
               label={
                 <Text>
-                  Year <Text style={styles.requiredStar}>*</Text>
+                  {t('addAuction.year')} <Text style={styles.requiredStar}>*</Text>
                 </Text>
               }
               placeholder="e.g. 2020"
@@ -968,7 +968,7 @@ export default function AddAuctionItem() {
             <Input
               label={
                 <Text>
-                  VIN <Text style={styles.requiredStar}>*</Text>
+                  {t('addAuction.vin')} <Text style={styles.requiredStar}>*</Text>
                 </Text>
               }
               value={form.vin}
@@ -982,7 +982,7 @@ export default function AddAuctionItem() {
             {vinDecoding && (
               <View style={styles.vinStatusRow}>
                 <ActivityIndicator size="small" color={appColors.primary} />
-                <Text style={styles.helperText}>Fetching details from VIN...</Text>
+                <Text style={styles.helperText}>{t('addAuction.fetchingVin')}</Text>
               </View>
             )}
           </View>
@@ -994,7 +994,7 @@ export default function AddAuctionItem() {
             <Input
               label={
                 <Text>
-                  Mileage (km) <Text style={styles.requiredStar}>*</Text>
+                  {t('addAuction.mileage')} <Text style={styles.requiredStar}>*</Text>
                 </Text>
               }
               placeholder="e.g. 45000"
@@ -1004,33 +1004,33 @@ export default function AddAuctionItem() {
               error={validationErrors.mileage}
             />
             <Input
-              label="Horsepower"
+              label={t('addAuction.horsepower')}
               placeholder="e.g. 150"
               value={String(form.horsePower)}
               keyboardType="numeric"
               onChangeText={t => handleTextChange('horsePower', Number(t) || 0)}
             />
             <Input
-              label="Engine Capacity"
+              label={t('addAuction.engineCapacity')}
               placeholder="e.g. 1800cc"
               value={form.engineCapacity}
               onChangeText={t => handleTextChange('engineCapacity', t)}
             />
             <Input
-              label="Engine Cylinders"
+              label={t('addAuction.engineCylinders')}
               placeholder="e.g. 4"
               value={form.engineCylinder}
               onChangeText={t => handleTextChange('engineCylinder', t)}
             />
             <Input
-              label="Number of Seats"
+              label={t('addAuction.numberOfSeats')}
               placeholder="e.g. 5"
               value={String(form.noOfSeats)}
               keyboardType="numeric"
               onChangeText={t => handleTextChange('noOfSeats', Number(t) || 5)}
             />
             <Input
-              label="Rim Size"
+              label={t('addAuction.rimSize')}
               value={form.rimSize}
               onChangeText={t => handleTextChange('rimSize', t)}
               placeholder='e.g. 17"'
@@ -1038,7 +1038,7 @@ export default function AddAuctionItem() {
             <Input
               label={
                 <Text>
-                  Color <Text style={styles.requiredStar}>*</Text>
+                  {t('addAuction.color')} <Text style={styles.requiredStar}>*</Text>
                 </Text>
               }
               value={form.color}
@@ -1049,7 +1049,7 @@ export default function AddAuctionItem() {
             <Input
               label={
                 <Text>
-                  Location <Text style={styles.requiredStar}>*</Text>
+                  {t('addAuction.location')} <Text style={styles.requiredStar}>*</Text>
                 </Text>
               }
               value={form.location}
@@ -1058,7 +1058,7 @@ export default function AddAuctionItem() {
               error={validationErrors.location}
             />
 
-            <Text style={styles.optionsLabel}>Fuel Type</Text>
+            <Text style={styles.optionsLabel}>{t('addAuction.fuelType')}</Text>
             <MultiCheckBox
               options={fuelTypeOptions}
               selectedIds={[form.fuelType]}
@@ -1068,7 +1068,7 @@ export default function AddAuctionItem() {
               }
             />
 
-            <Text style={styles.optionsLabel}>Drive Type</Text>
+            <Text style={styles.optionsLabel}>{t('addAuction.driveType')}</Text>
             <MultiCheckBox
               options={driveTypeOptions}
               selectedIds={[form.driveType]}
@@ -1078,7 +1078,7 @@ export default function AddAuctionItem() {
               }
             />
 
-            <Text style={styles.optionsLabel}>Transmission</Text>
+            <Text style={styles.optionsLabel}>{t('addAuction.transmission')}</Text>
             <MultiCheckBox
               options={transmissionTypeOptions}
               selectedIds={[form.transmissionType]}
@@ -1088,7 +1088,7 @@ export default function AddAuctionItem() {
               }
             />
 
-            <Text style={styles.optionsLabel}>Body Type</Text>
+            <Text style={styles.optionsLabel}>{t('addAuction.bodyType')}</Text>
             <MultiCheckBox
               options={bodyTypeOptions}
               selectedIds={[form.bodyType]}
@@ -1098,7 +1098,7 @@ export default function AddAuctionItem() {
               }
             />
 
-            <Text style={styles.optionsLabel}>Roof Type</Text>
+            <Text style={styles.optionsLabel}>{t('addAuction.roofType')}</Text>
             <MultiCheckBox
               options={roofTypeOptions}
               selectedIds={[form.roofType]}
@@ -1114,7 +1114,7 @@ export default function AddAuctionItem() {
         {step === 4 && (
           <View style={styles.formSection}>
             <CheckBox
-              label="First Owner"
+              label={t('addAuction.firstOwner')}
               checked={form.firstOwner}
               onToggle={() =>
                 handleTextChange('firstOwner', !form.firstOwner)
@@ -1123,7 +1123,7 @@ export default function AddAuctionItem() {
             <Input
               label={
                 <Text>
-                  Registration City <Text style={styles.requiredStar}>*</Text>
+                  {t('addAuction.registrationCity')} <Text style={styles.requiredStar}>*</Text>
                 </Text>
               }
               value={form.registrationCity}
@@ -1132,18 +1132,18 @@ export default function AddAuctionItem() {
               error={validationErrors.registrationCity}
             />
             <Input
-              label="Seller Nationality"
+              label={t('addAuction.sellerNationality')}
               value={form.sellerNationality}
               placeholder="e.g. UAE"
               onChangeText={t => handleTextChange('sellerNationality', t)}
             />
             <CheckBox
-              label="Warranty Available"
+              label={t('addAuction.warrantyAvailable')}
               checked={form.warranty}
               onToggle={() => handleTextChange('warranty', !form.warranty)}
             />
             <CheckBox
-              label="Service History Available"
+              label={t('addAuction.serviceHistoryAvailable')}
               checked={form.serviceHistory}
               onToggle={() =>
                 handleTextChange('serviceHistory', !form.serviceHistory)
@@ -1155,9 +1155,9 @@ export default function AddAuctionItem() {
         {/* STEP 5: Media Upload */}
         {step === 5 && (
           <View style={styles.formSection}>
-            <Text style={styles.sectionTitle}>Video Upload <Text style={styles.optionalLabel}>(Optional)</Text></Text>
+            <Text style={styles.sectionTitle}>{t('addAuction.videoUpload')} <Text style={styles.optionalLabel}>{t('addAuction.optional')}</Text></Text>
             <Text style={styles.helperText}>
-              Max size: 100MB. Supported formats: MP4, MOV
+              {t('addAuction.videoMaxSize')}
             </Text>
             
             {form.videoUri ? (
@@ -1165,7 +1165,7 @@ export default function AddAuctionItem() {
                 <View style={styles.uploadedMediaItem}>
                   <Play size={24} color={appColors.primary} />
                   <Text style={styles.uploadedFileName} numberOfLines={1}>
-                    Video Selected
+                    {t('addAuction.videoSelected')}
                   </Text>
                   <TouchableOpacity onPress={removeVideo}>
                     <X size={20} color={appColors.red} />
@@ -1175,15 +1175,15 @@ export default function AddAuctionItem() {
             ) : (
               <TouchableOpacity style={styles.uploadButton} onPress={pickVideoFile}>
                 <Upload size={24} color={appColors.primary} />
-                <Text style={styles.uploadButtonText}>Choose Video</Text>
+                <Text style={styles.uploadButtonText}>{t('addAuction.chooseVideo')}</Text>
               </TouchableOpacity>
             )}
 
             <Text style={[styles.sectionTitle, { marginTop: 24 }]}>
-              Media Photos <Text style={styles.optionalLabel}>(Optional)</Text>
+              {t('addAuction.mediaPhotos')} <Text style={styles.optionalLabel}>{t('addAuction.optional')}</Text>
             </Text>
             <Text style={styles.helperText}>
-              You can add up to 10 additional images
+              {t('addAuction.mediaPhotosHelper')}
             </Text>
 
             {uploadedMediaImages.length > 0 ? (
@@ -1208,7 +1208,7 @@ export default function AddAuctionItem() {
                   <TouchableOpacity style={styles.uploadButton} onPress={pickMediaImages}>
                     <Upload size={24} color={appColors.primary} />
                     <Text style={styles.uploadButtonText}>
-                      Add More ({uploadedMediaImages.length}/10)
+                      {t('addAuction.addMore')} ({uploadedMediaImages.length}/10)
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -1216,7 +1216,7 @@ export default function AddAuctionItem() {
             ) : (
               <TouchableOpacity style={styles.uploadButton} onPress={pickMediaImages}>
                 <Upload size={24} color={appColors.primary} />
-                <Text style={styles.uploadButtonText}>Choose Images</Text>
+                <Text style={styles.uploadButtonText}>{t('addAuction.chooseImages')}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -1225,9 +1225,9 @@ export default function AddAuctionItem() {
         {/* STEP 6: Documents */}
         {step === 6 && (
           <View style={styles.formSection}>
-            <Text style={styles.sectionTitle}>Upload Documents <Text style={styles.optionalLabel}>(Optional)</Text></Text>
+            <Text style={styles.sectionTitle}>{t('addAuction.uploadDocuments')} <Text style={styles.optionalLabel}>{t('addAuction.optional')}</Text></Text>
             <Text style={styles.helperText}>
-              Upload registration papers, inspection reports, service records, etc.
+              {t('addAuction.documentsHelper')}
             </Text>
 
             {uploadedDocuments.length > 0 ? (
@@ -1251,7 +1251,7 @@ export default function AddAuctionItem() {
                   <TouchableOpacity style={styles.uploadButton} onPress={pickDocuments}>
                     <Upload size={24} color={appColors.primary} />
                     <Text style={styles.uploadButtonText}>
-                      Add More Documents ({uploadedDocuments.length}/5)
+                      {t('addAuction.addMoreDocuments')} ({uploadedDocuments.length}/5)
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -1259,7 +1259,7 @@ export default function AddAuctionItem() {
             ) : (
               <TouchableOpacity style={styles.uploadButton} onPress={pickDocuments}>
                 <Upload size={24} color={appColors.primary} />
-                <Text style={styles.uploadButtonText}>Choose Documents</Text>
+                <Text style={styles.uploadButtonText}>{t('addAuction.chooseDocuments')}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -1268,7 +1268,7 @@ export default function AddAuctionItem() {
         {/* STEP 7: Features */}
         {step === 7 && (
           <View style={styles.formSection}>
-            <Text style={styles.sectionTitle}>Vehicle Features</Text>
+            <Text style={styles.sectionTitle}>{t('addAuction.vehicleFeatures')}</Text>
             <MultiCheckBox
               options={featureOptions}
               selectedIds={selectedFeatureIds}
@@ -1288,7 +1288,7 @@ export default function AddAuctionItem() {
         {/* STEP 8: Vehicle Condition & Damage Report */}
         {step === 8 && (
           <View style={styles.formSection}>
-            <Text style={styles.sectionTitle}>Vehicle Condition <Text style={styles.requiredStar}>*</Text></Text>
+            <Text style={styles.sectionTitle}>{t('addAuction.step8Title')} <Text style={styles.requiredStar}>*</Text></Text>
 
             <View style={styles.conditionGrid}>
               {CONDITION_OPTIONS.map(condition => (
@@ -1319,7 +1319,7 @@ export default function AddAuctionItem() {
             {images.length > 0 && (
               <View style={{ marginTop: 20 }}>
                 <Text style={styles.sectionTitle}>
-                  {form.vehicleCondition === 'damage' ? 'Mark Damage on Image' : 'Vehicle Images'}
+                  {form.vehicleCondition === 'damage' ? t('addAuction.markDamageOnImage') : t('addAuction.vehicleImages')}
                 </Text>
 
                 <View style={styles.imageSelectorRow}>
@@ -1388,7 +1388,13 @@ export default function AddAuctionItem() {
                 {form.vehicleCondition === 'damage' && (
                   <>
                     <View style={styles.damageTypeRow}>
-                      {['Scratch', 'Dent', 'Paint Issue', 'Rust', 'Other'].map(type => (
+                      {[
+                        t('addAuction.damageType.scratch'),
+                        t('addAuction.damageType.dent'),
+                        t('addAuction.damageType.paintIssue'),
+                        t('addAuction.damageType.rust'),
+                        t('addAuction.damageType.other'),
+                      ].map(type => (
                         <TouchableOpacity
                           key={type}
                           style={[
@@ -1413,7 +1419,7 @@ export default function AddAuctionItem() {
 
                     {damageMarkerPosition && currentDamageType && (
                       <Button
-                        label="Add Damage Mark"
+                        label={t('addAuction.addDamageMark')}
                         onPress={addDamageReport}
                         buttonStyle={styles.marginTop20}
                       />
@@ -1421,7 +1427,7 @@ export default function AddAuctionItem() {
 
                     {form.damageReports && form.damageReports.length > 0 && (
                       <View style={styles.damageReportList}>
-                        <Text style={styles.sectionTitle}>Damage Reports</Text>
+                        <Text style={styles.sectionTitle}>{t('addAuction.damageReports')}</Text>
                         {form.damageReports.map((report, idx) => (
                           <View key={idx} style={styles.damageReportItem}>
                             <Text style={styles.damageReportItemText}>
@@ -1430,7 +1436,7 @@ export default function AddAuctionItem() {
                             <TouchableOpacity
                               onPress={() => removeDamageReport(idx)}
                             >
-                              <Text style={styles.removeDamageText}>Remove</Text>
+                              <Text style={styles.removeDamageText}>{t('addAuction.remove')}</Text>
                             </TouchableOpacity>
                           </View>
                         ))}
@@ -1445,7 +1451,7 @@ export default function AddAuctionItem() {
               <View style={styles.emptyStateBox}>
                 <AlertCircle size={32} color={appColors.textMuted} />
                 <Text style={styles.emptyStateText}>
-                  Photos will appear here after you upload them in the Media step
+                  {t('addAuction.photosWillAppear')}
                 </Text>
               </View>
             )}
@@ -1456,7 +1462,7 @@ export default function AddAuctionItem() {
         {step === 9 && (
           <View style={styles.formSection}>
             <Text style={styles.sectionTitle}>
-              Photos <Text style={styles.requiredStar}>*</Text>
+              {t('addAuction.photos')} <Text style={styles.requiredStar}>*</Text>
             </Text>
             <ImagePickerField
               images={images}
@@ -1467,10 +1473,10 @@ export default function AddAuctionItem() {
             />
 
             <Text style={[styles.sectionTitle, { marginTop: 20 }]}>
-              Description
+              {t('addAuction.description')}
             </Text>
             <Input
-              label="Description"
+              label={t('addAuction.description')}
               placeholder="e.g. This is a description of the car"
               value={form.description}
               onChangeText={t => handleTextChange('description', t)}
@@ -1480,7 +1486,7 @@ export default function AddAuctionItem() {
             />
 
             <Text style={[styles.sectionTitle, { marginTop: 20 }]}>
-              Review Summary
+              {t('addAuction.reviewSummary')}
             </Text>
             <View style={styles.reviewCard}>
               <Text style={styles.reviewLine}>
@@ -1502,13 +1508,13 @@ export default function AddAuctionItem() {
 
       <View style={styles.bottomBar}>
         <Button
-          label={step === 1 ? 'Cancel' : 'Back'}
+          label={step === 1 ? t('common.cancel') : t('addAuction.back')}
           variant="secondary"
           onPress={goBack}
           buttonStyle={styles.bottomButton}
         />
         <Button
-          label={step === 9 ? (isEdit ? 'Update Auction' : 'Create Auction') : 'Continue'}
+          label={step === 9 ? (isEdit ? t('addAuction.updateAuction') : t('addAuction.createAuction')) : t('addAuction.continue')}
           onPress={handleNext}
           buttonStyle={styles.bottomButton}
         />
@@ -1544,15 +1550,15 @@ export default function AddAuctionItem() {
 
       <LoadingModal
         visible={saving}
-        message={isEdit ? 'Updating...' : 'Creating...'}
+        message={isEdit ? t('addAuction.updating') : t('addAuction.creating')}
       />
 
       <ConfirmationModal
         isVisible={modalVisible}
-        title="Discard Changes?"
-        message="You have unsaved changes. Are you sure you want to leave?"
-        confirmText="Yes, Leave"
-        cancelText="Stay"
+        title={t('addAuction.discardChanges')}
+        message={t('addAuction.discardMessage')}
+        confirmText={t('addAuction.yesLeave')}
+        cancelText={t('addAuction.stay')}
         onConfirm={handleLeave}
         onCancel={() => setModalVisible(false)}
       />

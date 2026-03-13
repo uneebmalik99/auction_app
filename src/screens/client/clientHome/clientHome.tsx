@@ -22,7 +22,7 @@ import { toggleFavorite } from '../../../redux/profileSlice';
 import { fetchItems } from '../../../api/items';
 import { Bell, Signal, Clock } from 'lucide-react-native';
 import { appColors } from '../../../utils/appColors';
-import { handleFavorite } from '../../../api/favorites';
+import { handleFavorite, toggleFavoriteAPI } from '../../../api/favorites';
 import { getItem } from '../../../utils/methods';
 import { useNotifications } from '../../../hooks/useNotification';
 import { useGreeting } from '../../../hooks/useGreeting';
@@ -30,10 +30,12 @@ import { getSocket, connectSocket } from '../../../socket/socketService';
 import type { Socket } from 'socket.io-client';
 import { API_BASE_URL } from '../../../api/autentication';
 import { height, width } from '../../../utils/dimensions';
+import { useI18n } from '../../../i18n';
 
 export default function CustomerHome() {
   const navigation = useNavigation<RootNavigationProp>();
   const dispatch = useAppDispatch();
+  const { t, isRTL } = useI18n();
   const currentUser = useAppSelector(state => state.profile.user);
   const favoriteIds = useAppSelector(
     state => state.profile.user?.favorites ?? [],
@@ -84,6 +86,28 @@ export default function CustomerHome() {
       auctionId: item._id,
       item,
     });
+  };
+
+  const handleFavoritePress = async (vehicleId: string) => {
+    try {
+      if (!currentUser) return;
+      
+      const userId = String(currentUser.id || (currentUser as any)._id || '');
+      const token = await getItem<string>('auth_token');
+      
+      if (!userId || !token) {
+        console.error('Missing user ID or token');
+        return;
+      }
+
+      await toggleFavoriteAPI(userId, vehicleId, token);
+      
+      // Toggle favorite in Redux state
+      dispatch(toggleFavorite(vehicleId));
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+      Alert.alert('Error', 'Failed to update favorite. Please try again.');
+    }
   };
 
   // Fetch vehicles from API to get registrationCity
@@ -167,7 +191,7 @@ export default function CustomerHome() {
 
     socket.on('connect_error', (error) => {
       console.error('[CustomerHome] Connection error:', error);
-      setError('Failed to connect to real-time server');
+      setError(t('home.connectionFailed'));
       setLoading(false);
     });
 
@@ -517,16 +541,16 @@ export default function CustomerHome() {
             onRefresh={onRefresh}
             colors={[appColors.primary]} // Android
             tintColor={appColors.primary} // iOS
-            title="Refreshing..." // iOS only
+            title={t('home.refreshing')} // iOS only
             titleColor={appColors.textMuted}
           />
         }
       >
         {/* Top row with greeting and profile shortcut */}
-        <View style={styles.topRow}>
+        <View style={[styles.topRow, isRTL && styles.topRowRTL]}>
           <View>
-            <Text style={styles.greetingLabel}>{greeting},</Text>
-            <Text style={styles.greetingName}>{currentUser?.name}</Text>
+            <Text style={[styles.greetingLabel, isRTL && styles.greetingLabelRTL]}>{greeting},</Text>
+            <Text style={[styles.greetingName, isRTL && styles.greetingNameRTL]}>{currentUser?.name}</Text>
           </View>
           <TouchableOpacity
             style={styles.notificationIconButton}
@@ -544,16 +568,18 @@ export default function CustomerHome() {
 
         {/* Live Auctions Section */}
         <View style={styles.liveAuctionsHeader}>
-          <View style={styles.liveAuctionsHeaderTop}>
+          <View style={[styles.liveAuctionsHeaderTop, isRTL && styles.liveAuctionsHeaderTopRTL]}>
             <View style={styles.liveAuctionsIconBox}>
               <Signal size={24} color={appColors.primary} />
             </View>
-            <Text style={styles.liveAuctionsTitle}>Live Vehicle Auctions</Text>
+            <Text style={[styles.liveAuctionsTitle, isRTL && styles.liveAuctionsTitleRTL]}>
+              {t('home.liveAuctions')}
+            </Text>
           </View>
-          <Text style={styles.liveAuctionsSubtitle}>
+          <Text style={[styles.liveAuctionsSubtitle, isRTL && styles.liveAuctionsSubtitleRTL]}>
             {socketConnected
-              ? `${liveAuctions.length} live auctions • real-time`
-              : 'Connecting...'}
+              ? `${liveAuctions.length} ${t('home.liveAuctionsSubtitle')}`
+              : t('home.connecting')}
           </Text>
         </View>
 
@@ -575,6 +601,7 @@ export default function CustomerHome() {
               paddingBottom: height(2),
             }}
             renderItem={({ item }) => {
+              const isFavorite = favoriteIds.includes(item._id);
               return (
                 <LiveAuctionCard
                   item={item}
@@ -582,27 +609,35 @@ export default function CustomerHome() {
                   onViewBidDetails={(vehicleId) => {
                     handleOpenItem(item);
                   }}
+                  isFavorite={isFavorite}
+                  onFavoritePress={() => handleFavoritePress(item._id)}
                 />
               );
             }}
             ListEmptyComponent={
               <View style={[styles.emptyState, { width: width(100), paddingHorizontal: width(6) }]}>
-                <Text style={styles.emptyTitle}>No live auctions right now</Text>
-                <Text style={styles.emptySubtitle}>Check back soon for new auctions!</Text>
+                <Text style={[styles.emptyTitle, isRTL && styles.emptyTitleRTL]}>
+                  {t('home.noLiveAuctions')}
+                </Text>
+                <Text style={[styles.emptySubtitle, isRTL && styles.emptySubtitleRTL]}>
+                  {t('home.noLiveAuctionsSubtitle')}
+                </Text>
               </View>
             }
           />
         )}
 
         {/* Upcoming Auctions Section */}
-        <View style={[styles.sectionHeaderRow, { marginTop: height(3) }]}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+        <View style={[styles.sectionHeaderRow, { marginTop: height(3) }, isRTL && styles.sectionHeaderRowRTL]}>
+          <View style={[styles.sectionHeaderTop, isRTL && styles.sectionHeaderTopRTL]}>
             <Clock size={20} color={appColors.textSecondary} />
-            <Text style={styles.sectionTitle}>Upcoming Auctions</Text>
+            <Text style={[styles.sectionTitle, isRTL && styles.sectionTitleRTL]}>
+              {t('home.upcomingAuctions')}
+            </Text>
           </View>
           {upcomingAuctions.length > 0 && (
-            <Text style={[styles.sectionSubtitle, { marginLeft: width(11) }]}>
-              {upcomingAuctions.length} upcoming {upcomingAuctions.length === 1 ? 'auction' : 'auctions'}
+            <Text style={[styles.sectionSubtitle, isRTL && styles.sectionSubtitleRTL, isRTL ? { marginRight: width(11) } : { marginLeft: width(11) }]}>
+              {upcomingAuctions.length} {t('home.upcomingAuctionsSubtitle')} {upcomingAuctions.length === 1 ? t('home.auction') : t('home.auctions')}
             </Text>
           )}
         </View>
@@ -617,11 +652,14 @@ export default function CustomerHome() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.listContent}
             renderItem={({ item }) => {
+              const isFavorite = favoriteIds.includes(item._id);
               return (
                 <View style={{ marginBottom: height(2), width: '100%', alignItems: 'center' }}>
                   <UpcomingAuctionCard
                     item={item}
                     onPress={() => handleOpenItem(item)}
+                    isFavorite={isFavorite}
+                    onFavoritePress={() => handleFavoritePress(item._id)}
                   />
                 </View>
               );
@@ -629,8 +667,12 @@ export default function CustomerHome() {
           />
         ) : (
           <View style={[styles.emptyState, { paddingVertical: height(4), paddingHorizontal: width(6) }]}>
-            <Text style={styles.emptyTitle}>No upcoming auctions at the moment</Text>
-            <Text style={[styles.emptySubtitle, { marginTop: height(1) }]}>Check back soon for new auctions!</Text>
+            <Text style={[styles.emptyTitle, isRTL && styles.emptyTitleRTL]}>
+              {t('home.noUpcomingAuctions')}
+            </Text>
+            <Text style={[styles.emptySubtitle, isRTL && styles.emptySubtitleRTL, { marginTop: height(1) }]}>
+              {t('home.noUpcomingAuctionsSubtitle')}
+            </Text>
           </View>
         )}
       </ScrollView>

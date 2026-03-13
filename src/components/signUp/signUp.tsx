@@ -27,7 +27,7 @@ export default function SignUp({ activeTab, setActiveTab }: AuthTabProps) {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { t } = useI18n();
+  const { t, isRTL } = useI18n();
 
   const handleSubmit = async () => {
     if (
@@ -97,7 +97,7 @@ export default function SignUp({ activeTab, setActiveTab }: AuthTabProps) {
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
     >
-      <Text style={styles.headerText}>{t('signUp.header')}</Text>
+      <Text style={[styles.headerText, isRTL && styles.headerTextRTL]}>{t('signUp.header')}</Text>
 
       <Input
         label={t('signUp.fullName')}
@@ -163,8 +163,8 @@ export default function SignUp({ activeTab, setActiveTab }: AuthTabProps) {
         labelStyle={styles.checkboxLabel}
       />
 
-      <View style={styles.helperRow}>
-        <Text style={styles.helperText}>{t('signUp.termsHelper')}</Text>
+      <View style={[styles.helperRow, isRTL && styles.helperRowRTL]}>
+        <Text style={[styles.helperText, isRTL && styles.helperTextRTL]}>{t('signUp.termsHelper')}</Text>
       </View>
 
       <Button

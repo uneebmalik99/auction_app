@@ -27,7 +27,7 @@ import CustomerBottomTabs from './bottomTabs/clientBottomTabs/clientBottomTabs';
 import AdminBottomTabs from './bottomTabs/adminBotttomTabs/adminBottomTabs';
 import type { RootStackParamList } from '../utils/types';
 import screenNames from './routes';
-import * as Keychain from 'react-native-keychain';
+import { getItem } from '../utils/methods';
 import { fetchCurrentUser } from '../api/autentication';
 import { setUser } from '../redux/profileSlice';
 import { useAppDispatch } from '../redux/hooks';
@@ -44,15 +44,16 @@ export function RootNavigator() {
   useEffect(() => {
     const checkToken = async () => {
       try {
-        const credentials = await Keychain.getGenericPassword();
+        const token = await getItem<string>('auth_token');
+        const role = await getItem<string | number>('user_role');
 
-        console.log('credentials', credentials);
+        console.log('token from AsyncStorage', token);
+        console.log('role from AsyncStorage', role);
 
-        if (credentials && credentials?.password) {
-          let data = await fetchCurrentUser(credentials?.password);
+        if (token) {
+          let data = await fetchCurrentUser(token);
           console.log('res', data);
-          console.log('credentials', credentials);
-          setToken(credentials?.password); // The token is in .password
+          setToken(token);
           // Optionally validate token with backend (e.g., refresh if expired)
 
           const rawFavorites: any =
@@ -84,8 +85,11 @@ export function RootNavigator() {
           console.log('normalizedUser', normalizedUser);
           dispatch(setUser(normalizedUser?.user));
 
-          if (credentials?.username === 'admin') {
+          const userRole = normalizedUser?.user?.role ?? role;
+          if (userRole === 2 || userRole === 0) {
             setInitialRoute(screenNames.adminHomeTab);
+          } else if (userRole === 4) {
+            setInitialRoute(screenNames.brokerHomeTab);
           } else {
             setInitialRoute(screenNames?.customerHomeTab);
           }
@@ -94,6 +98,7 @@ export function RootNavigator() {
         }
       } catch (error) {
         console.log('No saved token or error:', error);
+        setInitialRoute(screenNames.welcome);
       } finally {
         setLoading(false);
       }
@@ -102,48 +107,6 @@ export function RootNavigator() {
     checkToken();
   }, []);
 
-  // useEffect(() => {
-  //   const checkTokenWithBiometrics = async () => {
-  //     try {
-  //       // This will trigger the native biometric prompt if credentials exist with accessControl
-  //       const credentials = await Keychain.getGenericPassword({
-  //         authenticationPrompt: {
-  //           title: 'Authenticate',
-  //           subtitle: 'Use biometrics to access your account',
-  //           description: 'Confirm your identity',
-  //           cancel: 'Cancel',
-  //         },
-  //       });
-
-  //       console.log('credentials', credentials);
-
-  //       if (credentials && credentials.password) {
-  //         let res = await fetchCurrentUser(credentials.password);
-  //         console.log('res', res);
-  //         console.log('Biometric success:', credentials);
-
-  //         setToken(credentials.password);
-
-  //         if (credentials.username === 'admin') {
-  //           setInitialRoute(screenNames.adminHomeTab);
-  //         } else {
-  //           setInitialRoute(screenNames.customerHomeTab);
-  //         }
-  //       } else {
-  //         // No stored credentials
-  //         setInitialRoute(screenNames.welcome);
-  //       }
-  //     } catch (error) {
-  //       console.log('Biometric failed or canceled:', error);
-  //       // User canceled, failed auth, or no biometrics set up → go to login
-  //       setInitialRoute(screenNames.welcome);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   checkTokenWithBiometrics();
-  // }, []);
 
   if (loading) {
     return <LoadingScreen />;

@@ -182,7 +182,7 @@ export default function ItemDetails() {
 
   const loadItem = async () => {
     if (itemParams) {
-      setItem(item);
+      setItem(itemParams);
       setLoadingItem(false);
       return;
     }
@@ -191,9 +191,11 @@ export default function ItemDetails() {
     try {
       setLoadingItem(true);
       const itemData = await fetchItemById(auctionId as string);
-      console.log('itemData', itemData);
+      console.log('itemData from API:', itemData);
 
-      setItem(itemData?.vehicle as AuctionItem);
+      // Handle different response formats
+      const vehicleData = (itemData as any)?.vehicle || itemData;
+      setItem(vehicleData as AuctionItem);
     } catch (err) {
       console.error('Failed to load item:', err);
       setItem(null);

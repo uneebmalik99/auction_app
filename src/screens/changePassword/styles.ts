@@ -18,10 +18,16 @@ export const styles = StyleSheet.create({
     color: appColors.textPrimary,
     marginBottom: height(1),
   },
+  titleRTL: {
+    textAlign: 'right',
+  },
   subtitle: {
     fontSize: 13,
     color: appColors.textMuted,
     marginBottom: height(3),
+  },
+  subtitleRTL: {
+    textAlign: 'right',
   },
   formSection: {
     marginBottom: height(3),

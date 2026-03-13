@@ -12,6 +12,12 @@ export const styles = StyleSheet.create({
     color: appColors.textSecondary,
     marginBottom: 6,
   },
+  labelRTL: {
+    textAlign: 'right',
+  },
+  labelContainer: {
+    marginBottom: 6,
+  },
   input: {
     height: height(6),
     borderRadius: 12,
@@ -21,9 +27,15 @@ export const styles = StyleSheet.create({
     borderColor: appColors.inputBorder,
     color: appColors.textPrimary,
   },
+  inputRTL: {
+    textAlign: 'right',
+  },
   error: {
     marginTop: 4,
     fontSize: 12,
     color: appColors.red,
+  },
+  errorRTL: {
+    textAlign: 'right',
   },
 });

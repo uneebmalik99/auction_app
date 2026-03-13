@@ -25,5 +25,9 @@ export const styles = StyleSheet.create({
     color: appColors.buttonText,
     fontSize: 16,
     fontWeight: '600',
+    textAlign: 'center',
+  },
+  labelRTL: {
+    textAlign: 'center',
   },
 });

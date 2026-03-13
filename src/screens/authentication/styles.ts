@@ -16,6 +16,9 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 32,
   },
+  titleRTL: {
+    textAlign: 'center',
+  },
   tabContainer: {
     flexDirection: 'row',
     backgroundColor: appColors.surface,

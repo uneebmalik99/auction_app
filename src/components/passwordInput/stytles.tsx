@@ -12,6 +12,9 @@ export const styles = StyleSheet.create({
     color: appColors.textSecondary,
     marginBottom: 6,
   },
+  labelRTL: {
+    textAlign: 'right',
+  },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -22,14 +25,24 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: appColors.inputBorder,
   },
+  inputWrapperRTL: {
+    flexDirection: 'row-reverse',
+  },
   input: {
     flex: 1,
     color: appColors.textPrimary,
+  },
+  inputRTL: {
+    textAlign: 'right',
   },
   toggleButton: {
     marginLeft: 8,
     paddingVertical: 4,
     paddingHorizontal: 8,
+  },
+  toggleButtonRTL: {
+    marginLeft: 0,
+    marginRight: 8,
   },
   toggleText: {
     fontSize: 12,
@@ -40,5 +53,8 @@ export const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 12,
     color: appColors.textError,
+  },
+  errorRTL: {
+    textAlign: 'right',
   },
 });

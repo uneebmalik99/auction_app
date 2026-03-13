@@ -21,10 +21,10 @@ import {
   MyBidsTab,
   RootNavigationProp,
 } from '../../../utils/types';
-import { myBidsTabs } from '../../../utils/data';
 import { appColors } from '../../../utils/appColors';
 import { FileText, DollarSign } from 'lucide-react-native';
 import { height, width } from '../../../utils/dimensions';
+import { useI18n } from '../../../i18n';
 
 interface BidItem {
   id: string;
@@ -37,6 +37,7 @@ interface BidItem {
 }
 
 export default function MyBids() {
+  const { t } = useI18n();
   const currentUser = useAppSelector(state => state.profile.user);
   const navigation = useNavigation<RootNavigationProp>();
 
@@ -114,7 +115,7 @@ export default function MyBids() {
       setError(
         err instanceof Error
           ? err.message
-          : 'Unable to load bids. Please try again.',
+          : t('myBids.unableToLoad'),
       );
     } finally {
       setLoading(false);
@@ -159,13 +160,13 @@ export default function MyBids() {
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'live':
-        return 'Live';
+        return t('status.live');
       case 'sold':
-        return 'Sold';
+        return t('tabs.sold');
       case 'pending':
-        return 'Pending';
+        return t('tabs.pending');
       default:
-        return 'Upcoming';
+        return t('tabs.upcoming');
     }
   };
 
@@ -175,7 +176,7 @@ export default function MyBids() {
         <Header titleKey="myBids.title" showBackButton={false} />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={appColors.primary} />
-          <Text style={styles.loadingText}>Loading your bids...</Text>
+          <Text style={styles.loadingText}>{t('myBids.loading')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -193,13 +194,16 @@ export default function MyBids() {
           </View>
           <View style={styles.statContent}>
             <Text style={styles.statValue}>{myBids.length}</Text>
-            <Text style={styles.statLabel}>Total Bids</Text>
+            <Text style={styles.statLabel}>{t('myBids.totalBids')}</Text>
           </View>
         </View>
       </View>
 
       <Tabs
-        tabs={myBidsTabs}
+        tabs={[
+          { key: 'active', label: t('myBids.activeBids') },
+          { key: 'purchased', label: t('myBids.purchased') },
+        ]}
         activeTab={activeTab}
         onTabPress={(key: string) => setActiveTab(key as MyBidsTab)}
       />
@@ -266,7 +270,7 @@ export default function MyBids() {
                       <View style={styles.currentBidContainer}>
                         <DollarSign size={16} color={appColors.textMuted} />
                         <Text style={styles.currentBidLabel}>
-                          Current Bid: <Text style={styles.currentBidValue}>
+                          {t('myBids.currentBid')} <Text style={styles.currentBidValue}>
                             ${(bid.vehicle.currentBid || bid.vehicle.startingPrice || 0).toLocaleString()}
                           </Text>
                         </Text>
@@ -285,13 +289,13 @@ export default function MyBids() {
             </View>
             <Text style={styles.emptyTitle}>
               {activeTab === 'active'
-                ? 'No bids placed yet'
-                : 'No purchases yet'}
+                ? t('myBids.noBidsYet')
+                : t('myBids.noPurchasesYet')}
             </Text>
             <Text style={styles.emptySubtitle}>
               {activeTab === 'active'
-                ? 'Start bidding on live auctions to see your bid history here'
-                : 'Once you win and complete payment, your purchases will show up here.'}
+                ? t('myBids.emptySubtitleActive')
+                : t('myBids.emptySubtitlePurchased')}
             </Text>
           </View>
         }

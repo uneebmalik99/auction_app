@@ -39,3 +39,17 @@ export function handleFavorite(itemId: string, token?: string) {
     body: JSON.stringify({ vehicleId: itemId }),
   });
 }
+
+export function toggleFavoriteAPI(userId: string, vehicleId: string, token?: string) {
+  return request<any>('/api/favorites', {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ 
+      user_id: userId,
+      vehicle_id: vehicleId 
+    }),
+  });
+}

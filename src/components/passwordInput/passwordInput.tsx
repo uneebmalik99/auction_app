@@ -9,6 +9,7 @@ import {
 import { Eye, EyeOff } from 'lucide-react-native';
 import { styles } from './stytles';
 import { appColors } from '../../utils/appColors';
+import { useI18n } from '../../i18n';
 
 interface PasswordInputProps extends TextInputProps {
   label?: string;
@@ -22,6 +23,7 @@ export default function PasswordInput({
   ...rest
 }: PasswordInputProps) {
   const [secure, setSecure] = useState(true);
+  const { isRTL } = useI18n();
 
   const handleToggleVisibility = () => {
     setSecure(prev => !prev);
@@ -29,22 +31,23 @@ export default function PasswordInput({
 
   return (
     <View style={styles.container}>
-      {label ? <Text style={styles.label}>{label}</Text> : null}
+      {label ? <Text style={[styles.label, isRTL && styles.labelRTL]}>{label}</Text> : null}
 
-      <View style={styles.inputWrapper}>
+      <View style={[styles.inputWrapper, isRTL && styles.inputWrapperRTL]}>
         <TextInput
-          style={[styles.input, style]}
+          style={[styles.input, isRTL && styles.inputRTL, style]}
           placeholderTextColor="#6b7280"
           secureTextEntry={secure}
           autoCapitalize="none"
           autoCorrect={false}
+          textAlign={isRTL ? 'right' : 'left'}
           {...rest}
         />
 
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={handleToggleVisibility}
-          style={styles.toggleButton}
+          style={[styles.toggleButton, isRTL && styles.toggleButtonRTL]}
         >
           {secure ? (
             <Eye size={18} color={appColors.textSecondary} />
@@ -54,7 +57,7 @@ export default function PasswordInput({
         </TouchableOpacity>
       </View>
 
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+      {error ? <Text style={[styles.error, isRTL && styles.errorRTL]}>{error}</Text> : null}
     </View>
   );
 }

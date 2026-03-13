@@ -16,6 +16,9 @@ export const styles = StyleSheet.create({
     color: appColors.textSecondary,
     marginBottom: height(2),
   },
+  headerTextRTL: {
+    textAlign: 'right',
+  },
   checkboxRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -45,9 +48,15 @@ export const styles = StyleSheet.create({
     marginTop: height(1),
     alignItems: 'flex-start',
   },
+  helperRowRTL: {
+    alignItems: 'flex-end',
+  },
   helperText: {
     fontSize: 12,
     color: appColors.textMuted,
+  },
+  helperTextRTL: {
+    textAlign: 'right',
   },
   createAccountText: {
     color: appColors.gray,

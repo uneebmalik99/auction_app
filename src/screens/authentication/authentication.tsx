@@ -10,7 +10,7 @@ export default function Authentication() {
   const navigation = useNavigation<AuthScreenNavigationProp>();
   const route = useRoute<any>();
   const [activeTab, setActiveTab] = useState<AuthTab>('signIn');
-  const { t } = useI18n();
+  const { t, isRTL } = useI18n();
 
   useEffect(() => {
     const initialTab = route?.params?.initialTab as AuthTab | undefined;
@@ -23,7 +23,7 @@ export default function Authentication() {
     <View style={styles.container}>
       <Header titleKey="auth.title" showBackButton={false} />
 
-      <Text style={styles.title}>{t('auth.welcome')}</Text>
+      <Text style={[styles.title, isRTL && styles.titleRTL]}>{t('auth.welcome')}</Text>
 
       <Tabs
         tabs={[

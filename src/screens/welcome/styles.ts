@@ -25,9 +25,15 @@ export const styles = StyleSheet.create({
     backgroundColor: appColors.surface,
     marginBottom: height(1.5),
   },
+  badgeRTL: {
+    alignSelf: 'flex-end',
+  },
   badgeText: {
     fontSize: 11,
     color: appColors.textMuted,
+  },
+  badgeTextRTL: {
+    textAlign: 'right',
   },
   title: {
     fontSize: 30,
@@ -35,15 +41,24 @@ export const styles = StyleSheet.create({
     color: appColors.textPrimary,
     marginBottom: height(1),
   },
+  titleRTL: {
+    textAlign: 'right',
+  },
   subtitle: {
     fontSize: 14,
     lineHeight: 20,
     color: appColors.textSecondary,
     marginBottom: height(2.5),
   },
+  subtitleRTL: {
+    textAlign: 'right',
+  },
   highlightRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+  highlightRowRTL: {
+    flexDirection: 'row-reverse',
   },
   highlightPill: {
     paddingHorizontal: 12,
@@ -57,16 +72,25 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     color: appColors.textMuted,
   },
+  highlightTextRTL: {
+    textAlign: 'right',
+  },
   languageRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: height(1),
   },
+  languageRowRTL: {
+    flexDirection: 'row-reverse',
+  },
   languageLabel: {
     fontSize: 13,
     color: appColors.textMuted,
     fontWeight: '600',
+  },
+  languageLabelRTL: {
+    textAlign: 'right',
   },
   languageDropdown: {
     width: width(50),

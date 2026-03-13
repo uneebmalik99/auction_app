@@ -6,9 +6,11 @@ import { changePassword } from '../../api/autentication';
 import { showErrorToast, showSuccessToast } from '../../utils/methods';
 import { useNavigation } from '@react-navigation/native';
 import { RootNavigationProp } from '../../utils/types';
+import { useI18n } from '../../i18n';
 
 export default function ChangePassword() {
   const navigation = useNavigation<RootNavigationProp>();
+  const { t, isRTL } = useI18n();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -32,7 +34,7 @@ export default function ChangePassword() {
     if (currentPassword && newPassword && confirmPassword) {
       if (newPassword !== confirmPassword) {
         console.log('New password and confirm password do not match');
-        showErrorToast('Password mismatch');
+        showErrorToast(t('changePassword.passwordMismatch'));
         setLoading(false);
         return;
       } else {
@@ -45,15 +47,15 @@ export default function ChangePassword() {
           );
 
           if (res?.message === 'Password changed successfully') {
-            showSuccessToast('Password updated successfully');
+            showSuccessToast(t('changePassword.success'));
             resetState();
             navigation.goBack();
           } else {
-            showErrorToast('Failed to update password');
+            showErrorToast(t('changePassword.failed'));
           }
         } catch (error) {
           showErrorToast(
-            'Failed to update password',
+            t('changePassword.failed'),
             error instanceof Error ? error.message : undefined,
           );
           console.log('error', error);
@@ -68,27 +70,26 @@ export default function ChangePassword() {
     <SafeAreaView style={styles.safeArea}>
       <Header titleKey="changePassword.title" />
       <View style={styles.container}>
-        <Text style={styles.title}>Change password</Text>
-        <Text style={styles.subtitle}>
-          For your security, please enter your current password and choose a new
-          one.
+        <Text style={[styles.title, isRTL && styles.titleRTL]}>{t('changePassword.pageTitle')}</Text>
+        <Text style={[styles.subtitle, isRTL && styles.subtitleRTL]}>
+          {t('changePassword.subtitle')}
         </Text>
 
         <View style={styles.formSection}>
           <PasswordInput
-            label="Current password"
+            label={t('changePassword.currentPassword')}
             value={currentPassword}
             onChangeText={setCurrentPassword}
             placeholder="••••••••"
           />
           <PasswordInput
-            label="New password"
+            label={t('changePassword.newPassword')}
             value={newPassword}
             onChangeText={setNewPassword}
             placeholder="••••••••"
           />
           <PasswordInput
-            label="Confirm new password"
+            label={t('changePassword.confirmPassword')}
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             placeholder="••••••••"
@@ -96,13 +97,13 @@ export default function ChangePassword() {
         </View>
 
         <Button
-          label="Save new password"
+          label={t('changePassword.saveButton')}
           onPress={handleSave}
           buttonStyle={styles.primaryButton}
           loading={loading}
         />
 
-        <LoadingModal visible={loading} message="Updating password..." />
+        <LoadingModal visible={loading} message={t('changePassword.updating')} />
       </View>
     </SafeAreaView>
   );

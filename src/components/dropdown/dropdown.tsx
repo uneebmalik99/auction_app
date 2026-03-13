@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { ChevronDown } from 'lucide-react-native';
 import { styles } from './styles';
+import { useI18n } from '../../i18n';
 
 export type DropdownOption = {
   label: string;
@@ -42,6 +43,7 @@ export default function Dropdown({
   containerStyle,
   placeholder = 'Select',
 }: DropdownProps) {
+  const { isRTL } = useI18n();
   const [open, setOpen] = useState(false);
 
   const isSelected = (val: string) => {
@@ -76,14 +78,20 @@ export default function Dropdown({
 
   return (
     <View style={[styles.container, containerStyle]}>
-      {label ? <Text style={styles.label}>{label}</Text> : null}
+      {label ? (
+        <Text style={[styles.label, isRTL && styles.labelRTL]}>
+          {label}
+        </Text>
+      ) : null}
 
       <TouchableOpacity
-        style={styles.trigger}
+        style={[styles.trigger, isRTL && styles.triggerRTL]}
         activeOpacity={0.8}
         onPress={() => setOpen(prev => !prev)}
       >
-        <Text style={styles.valueText}>{selectedLabel}</Text>
+        <Text style={[styles.valueText, isRTL && styles.valueTextRTL]}>
+          {selectedLabel}
+        </Text>
         <ChevronDown size={16} color={styles.icon.color as string} />
       </TouchableOpacity>
 
@@ -100,6 +108,7 @@ export default function Dropdown({
                 <Text
                   style={[
                     styles.optionText,
+                    isRTL && styles.optionTextRTL,
                     selected && styles.optionTextSelected,
                   ]}
                 >

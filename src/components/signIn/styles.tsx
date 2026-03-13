@@ -13,13 +13,24 @@ export const styles = StyleSheet.create({
     color: appColors.textSecondary,
     marginBottom: height(2),
   },
+  headerTextRTL: {
+    textAlign: 'right',
+  },
   helperRow: {
     marginTop: height(1),
     alignItems: 'flex-end',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  helperRowRTL: {
+    flexDirection: 'row-reverse',
   },
   helperText: {
     fontSize: 12,
     color: appColors.textMuted,
+  },
+  helperTextRTL: {
+    textAlign: 'right',
   },
   submitButton: {
     marginTop: height(2),

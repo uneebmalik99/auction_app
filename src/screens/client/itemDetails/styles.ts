@@ -45,6 +45,9 @@ export const styles = StyleSheet.create({
     fontSize: 11,
     color: appColors.textSecondary,
   },
+  mediaBadgeTextRTL: {
+    textAlign: 'right',
+  },
   shareBadge: {
     width: 32,
     height: 32,
@@ -65,6 +68,9 @@ export const styles = StyleSheet.create({
   carPlaceholderText: {
     fontSize: 13,
     color: appColors.textMuted,
+  },
+  carPlaceholderTextRTL: {
+    textAlign: 'right',
   },
   mediaBidLeft: {
     position: 'absolute',
@@ -145,20 +151,32 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: height(2),
   },
+  detailsHeaderRowRTL: {
+    flexDirection: 'row-reverse',
+  },
   detailsTitle: {
     fontSize: 20,
     fontWeight: '700',
     color: appColors.textPrimary,
+  },
+  detailsTitleRTL: {
+    textAlign: 'right',
   },
   detailsStartingLabel: {
     marginTop: 6,
     fontSize: 12,
     color: appColors.textMuted,
   },
+  detailsStartingLabelRTL: {
+    textAlign: 'right',
+  },
   detailsPriceRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
     marginTop: 4,
+  },
+  detailsPriceRowRTL: {
+    flexDirection: 'row-reverse',
   },
   detailsPriceMain: {
     fontSize: 20,
@@ -166,10 +184,18 @@ export const styles = StyleSheet.create({
     color: appColors.textPrimary,
     marginRight: 8,
   },
+  detailsPriceMainRTL: {
+    marginRight: 0,
+    marginLeft: 8,
+    textAlign: 'right',
+  },
   detailsPriceSecondary: {
     fontSize: 13,
     color: appColors.textMuted,
     // textDecorationLine: 'line-through',
+  },
+  detailsPriceSecondaryRTL: {
+    textAlign: 'right',
   },
   statusFloatingButton: {
     width: 40,
@@ -188,12 +214,18 @@ export const styles = StyleSheet.create({
     marginTop: height(2),
     marginBottom: height(1),
   },
+  tabsRowRTL: {
+    flexDirection: 'row-reverse',
+  },
   tabButton: {
     marginRight: width(4),
   },
   tabLabel: {
     fontSize: 14,
     color: appColors.textSecondary,
+  },
+  tabLabelRTL: {
+    textAlign: 'right',
   },
   tabLabelActive: {
     color: appColors.orange,
@@ -211,11 +243,17 @@ export const styles = StyleSheet.create({
     color: appColors.textSecondary,
     marginTop: height(1),
   },
+  descriptionTextRTL: {
+    textAlign: 'right',
+  },
   detailsSectionTitle: {
     marginTop: height(2),
     fontSize: 14,
     fontWeight: '600',
     color: appColors.textPrimary,
+  },
+  detailsSectionTitleRTL: {
+    textAlign: 'right',
   },
   specsGrid: {
     marginTop: height(1),
@@ -225,19 +263,31 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 4,
   },
+  specRowRTL: {
+    flexDirection: 'row-reverse',
+  },
   specLabel: {
     fontSize: 12,
     color: appColors.textPrimary,
     fontWeight: '500',
   },
+  specLabelRTL: {
+    textAlign: 'right',
+  },
   specValue: {
     fontSize: 12,
     color: appColors.textMuted,
+  },
+  specValueRTL: {
+    textAlign: 'right',
   },
   featuresList: {
     marginTop: height(1),
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+  featuresListRTL: {
+    flexDirection: 'row-reverse',
   },
   featureChip: {
     paddingHorizontal: 8,
@@ -250,6 +300,9 @@ export const styles = StyleSheet.create({
   featureText: {
     fontSize: 11,
     color: appColors.textSecondary,
+  },
+  featureTextRTL: {
+    textAlign: 'right',
   },
   bidsList: {
     marginTop: height(1),
@@ -287,24 +340,39 @@ export const styles = StyleSheet.create({
     fontWeight: '500',
     color: appColors.textPrimary,
   },
+  bidderNameRTL: {
+    textAlign: 'right',
+  },
   bidderPlace: {
     fontSize: 11,
     color: appColors.textMuted,
     marginTop: 2,
   },
+  bidderPlaceRTL: {
+    textAlign: 'right',
+  },
   bidAmounts: {
     alignItems: 'flex-end',
+  },
+  bidAmountsRTL: {
+    alignItems: 'flex-start',
   },
   bidAmountMain: {
     fontSize: 14,
     fontWeight: '600',
     color: appColors.textPrimary,
   },
+  bidAmountMainRTL: {
+    textAlign: 'right',
+  },
   bidAmountSecondary: {
     fontSize: 12,
     color: appColors.textMuted,
     textDecorationLine: 'line-through',
     marginTop: 2,
+  },
+  bidAmountSecondaryRTL: {
+    textAlign: 'right',
   },
   bottomCard: {
     marginTop: height(1.5),

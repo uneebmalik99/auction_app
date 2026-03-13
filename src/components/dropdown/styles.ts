@@ -10,6 +10,10 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     color: appColors.textSecondary,
     marginBottom: 6,
+    textAlign: 'left',
+  },
+  labelRTL: {
+    textAlign: 'right',
   },
   trigger: {
     flexDirection: 'row',
@@ -23,9 +27,16 @@ export const styles = StyleSheet.create({
     backgroundColor: appColors.inputBackground,
     height: height(6),
   },
+  triggerRTL: {
+    flexDirection: 'row-reverse',
+  },
   valueText: {
     fontSize: 14,
     color: appColors.textPrimary,
+    textAlign: 'left',
+  },
+  valueTextRTL: {
+    textAlign: 'right',
   },
   icon: {
     color: appColors.textMuted,
@@ -48,6 +59,10 @@ export const styles = StyleSheet.create({
   optionText: {
     fontSize: 14,
     color: appColors.textSecondary,
+    textAlign: 'left',
+  },
+  optionTextRTL: {
+    textAlign: 'right',
   },
   optionTextSelected: {
     color: appColors.textPrimary,

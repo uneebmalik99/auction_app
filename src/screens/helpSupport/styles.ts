@@ -25,11 +25,17 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
     color: appColors.textPrimary,
   },
+  titleRTL: {
+    textAlign: 'right',
+  },
   subtitle: {
     marginTop: 6,
     fontSize: 13,
     color: appColors.textMuted,
     lineHeight: 18,
+  },
+  subtitleRTL: {
+    textAlign: 'right',
   },
   actionsContainer: {
     width: '100%',
@@ -66,10 +72,16 @@ export const styles = StyleSheet.create({
     color: appColors.textPrimary,
     textAlign: 'center',
   },
+  sheetTitleRTL: {
+    textAlign: 'center',
+  },
   sheetSubtitle: {
     marginTop: 6,
     fontSize: 12,
     color: appColors.textMuted,
+    textAlign: 'center',
+  },
+  sheetSubtitleRTL: {
     textAlign: 'center',
   },
   sheetScroll: {

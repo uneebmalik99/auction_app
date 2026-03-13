@@ -21,15 +21,24 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: height(2),
   },
+  topRowRTL: {
+    flexDirection: 'row-reverse',
+  },
   greetingLabel: {
     fontSize: 15,
     color: appColors.textMuted,
+  },
+  greetingLabelRTL: {
+    textAlign: 'right',
   },
   greetingName: {
     marginTop: 4,
     fontSize: 20,
     fontWeight: '600',
     color: appColors.textPrimary,
+  },
+  greetingNameRTL: {
+    textAlign: 'right',
   },
   notificationIconButton: {
     width: height(4.5),
@@ -71,15 +80,32 @@ export const styles = StyleSheet.create({
     marginBottom: height(1.5),
     marginTop: height(1),
   },
+  sectionHeaderRowRTL: {
+    alignItems: 'flex-end',
+  },
+  sectionHeaderTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  sectionHeaderTopRTL: {
+    flexDirection: 'row-reverse',
+  },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: appColors.textSecondary,
   },
+  sectionTitleRTL: {
+    textAlign: 'right',
+  },
   sectionSubtitle: {
     fontSize: 12,
     color: appColors.textMuted,
     marginTop: height(0.5),
+  },
+  sectionSubtitleRTL: {
+    textAlign: 'right',
   },
   liveAuctionsHeader: {
     marginBottom: height(2.5),
@@ -120,10 +146,16 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
     color: appColors.textSecondary,
   },
+  emptyTitleRTL: {
+    textAlign: 'right',
+  },
   emptySubtitle: {
     fontSize: 12,
     color: appColors.textMuted,
     textAlign: 'center',
+  },
+  emptySubtitleRTL: {
+    textAlign: 'right',
   },
   statusText: {
     marginTop: height(1),
@@ -174,34 +206,5 @@ export const styles = StyleSheet.create({
   },
   cardRight: {
     alignItems: 'flex-end',
-  },
-  liveAuctionsHeader: {
-    marginBottom: height(2.5),
-    marginTop: height(1),
-  },
-  liveAuctionsHeaderTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: width(3),
-    marginBottom: height(0.8),
-  },
-  liveAuctionsIconBox: {
-    padding: width(2),
-    backgroundColor: appColors.primary + '33', // 20% opacity equivalent
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: appColors.primary + '4D', // 30% opacity equivalent
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  liveAuctionsTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: appColors.textPrimary,
-  },
-  liveAuctionsSubtitle: {
-    fontSize: 13,
-    color: appColors.textMuted,
-    marginLeft: width(14), // ml-14 equivalent (icon box + gap + icon size)
   },
 });

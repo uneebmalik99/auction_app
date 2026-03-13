@@ -9,14 +9,23 @@ export const styles = StyleSheet.create({
     color: appColors.textSecondary,
     marginBottom: height(0.5),
   },
+  labelRTL: {
+    textAlign: 'right',
+  },
   helperText: {
     fontSize: 12,
     color: appColors.textMuted,
     marginBottom: height(1.2),
   },
+  helperTextRTL: {
+    textAlign: 'right',
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  rowRTL: {
+    flexDirection: 'row-reverse',
   },
   addCard: {
     width: width(26),
@@ -30,6 +39,10 @@ export const styles = StyleSheet.create({
     marginRight: width(3),
     backgroundColor: appColors.background,
   },
+  addCardRTL: {
+    marginRight: 0,
+    marginLeft: width(3),
+  },
   addIcon: {
     fontSize: 20,
     color: appColors.textSecondary,
@@ -38,12 +51,24 @@ export const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 12,
     color: appColors.textSecondary,
+    textAlign: 'center',
+  },
+  addTextRTL: {
+    textAlign: 'center',
   },
   listContent: {
     paddingRight: width(2),
   },
+  listContentRTL: {
+    paddingRight: 0,
+    paddingLeft: width(2),
+  },
   thumbWrapper: {
     marginRight: width(2),
+  },
+  thumbWrapperRTL: {
+    marginRight: 0,
+    marginLeft: width(2),
   },
   thumb: {
     width: width(18),
@@ -62,14 +87,24 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(15,23,42,0.8)',
   },
+  removeButtonRTL: {
+    right: 'auto',
+    left: 4,
+  },
   counterText: {
     marginTop: height(0.8),
     fontSize: 12,
     color: appColors.textMuted,
   },
+  counterTextRTL: {
+    textAlign: 'right',
+  },
   errorText: {
     marginTop: 4,
     fontSize: 12,
     color: appColors.red,
+  },
+  errorTextRTL: {
+    textAlign: 'right',
   },
 });

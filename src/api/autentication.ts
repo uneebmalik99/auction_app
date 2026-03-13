@@ -2,7 +2,7 @@
 // Adjust API_BASE_URL and endpoint paths to match your backend.
 
 // export const API_BASE_URL = 'http://192.168.18.144:3000/'; // TODO: replace
-export const API_BASE_URL = 'http://151.247.196.129';
+export const API_BASE_URL = 'https://carauction.therevolutiontechnologies.io/';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getItem } from '../utils/methods';
 import { User } from '../utils/types';

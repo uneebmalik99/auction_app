@@ -13,6 +13,9 @@ export const styles = StyleSheet.create({
     paddingVertical: height(1.5),
     backgroundColor: appColors.background,
   },
+  containerRTL: {
+    flexDirection: 'row-reverse',
+  },
   backButton: {
     width: ICON_BOX_SIZE,
     height: ICON_BOX_SIZE,
@@ -32,6 +35,9 @@ export const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '600',
     color: appColors.textPrimary,
+  },
+  titleRTL: {
+    textAlign: 'center',
   },
   rightPlaceholder: {
     width: ICON_BOX_SIZE,

@@ -9,6 +9,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { styles } from './styles';
+import { useI18n } from '../../i18n';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'disabled';
 
@@ -32,6 +33,7 @@ export default function AppButton({
   textStyle,
   ...rest
 }: ButtonProps) {
+  const { isRTL } = useI18n();
   const isDisabled = disabled || loading || variant === 'disabled';
 
   const variantStyle =
@@ -53,7 +55,7 @@ export default function AppButton({
       {loading ? (
         <ActivityIndicator color="#ffffff" />
       ) : (
-        <Text style={[styles.label, textStyle]}>{label}</Text>
+        <Text style={[styles.label, isRTL && styles.labelRTL, textStyle]}>{label}</Text>
       )}
     </TouchableOpacity>
   );

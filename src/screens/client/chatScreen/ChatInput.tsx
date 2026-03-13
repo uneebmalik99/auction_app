@@ -37,11 +37,13 @@ import {
   type ImageLibraryOptions,
   type Asset,
 } from 'react-native-image-picker';
-import DocumentPicker, {
-  type DocumentPickerResponse,
-  types,
-} from 'react-native-document-picker';
+// import DocumentPicker, {
+//   type DocumentPickerResponse,
+//   types,
+// } from 'react-native-document-picker';
+import { pick, types,  } from '@react-native-documents/picker';
 import { styles } from './styles';
+import { useI18n } from '../../../i18n';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -102,7 +104,7 @@ function assetToPickedFile(asset: Asset): PickedFile {
 }
 
 /** Convert a react-native-document-picker result to PickedFile. */
-function docToPickedFile(doc: DocumentPickerResponse): PickedFile {
+function docToPickedFile(doc: any): PickedFile {
   return {
     uri: doc.uri,
     name: doc.name ?? 'document',
@@ -122,13 +124,14 @@ export default function ChatInput({
   uploading,
   disabled,
 }: Props) {
+  const { t } = useI18n();
   // ── Photo / Video picker ───────────────────────────────────────────────────
   const pickMedia = async () => {
     const granted = await requestAndroidMediaPermission();
     if (!granted) {
       Alert.alert(
-        'Permission denied',
-        'Please grant media access in your device settings.',
+        t('chat.permissionDenied'),
+        t('chat.permissionMessage'),
       );
       return;
     }
@@ -153,25 +156,24 @@ export default function ChatInput({
   const pickDocument = async () => {
     try {
       // Single file pick; use pickMultiple for multi-select
-      const result = await DocumentPicker.pickSingle({
+      const result = await pick({
         type: [types.allFiles],
+        allowMultiSelection: false,
         copyTo: 'cachesDirectory', // ensures a local file:// URI on both platforms
       });
 
       onFileSelected(docToPickedFile(result));
     } catch (err) {
-      if (!DocumentPicker.isCancel(err)) {
-        Alert.alert('Error', 'Could not open the document picker.');
-      }
+      Alert.alert(t('common.error'), t('chat.couldNotOpenPicker'));
     }
   };
 
   // ── Action sheet ───────────────────────────────────────────────────────────
   const showAttachOptions = () => {
-    Alert.alert('Attach', 'Choose a source', [
-      { text: 'Photo / Video', onPress: pickMedia },
-      { text: 'Document', onPress: pickDocument },
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('chat.attach'), t('chat.chooseSource'), [
+      { text: t('chat.photoVideo'), onPress: pickMedia },
+      { text: t('chat.document'), onPress: pickDocument },
+      { text: t('common.cancel'), style: 'cancel' },
     ]);
   };
 
@@ -181,7 +183,7 @@ export default function ChatInput({
       {uploading && (
         <View style={styles.uploadingBanner}>
           <ActivityIndicator size="small" color="#ef4444" />
-          <Text style={styles.uploadingText}>Uploading file…</Text>
+          <Text style={styles.uploadingText}>{t('chat.uploadingFile')}</Text>
         </View>
       )}
 
@@ -205,7 +207,7 @@ export default function ChatInput({
           style={styles.input}
           value={value}
           onChangeText={onChange}
-          placeholder={disabled ? 'Connecting…' : 'Type a message…'}
+          placeholder={disabled ? t('chat.connecting') : t('chat.typeMessage')}
           placeholderTextColor="#64748b"
           multiline
           editable={!disabled && !sending}

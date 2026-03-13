@@ -14,6 +14,7 @@ import {
 import Button from '../button/button'; // Adjust path as needed
 import { styles } from './styles';
 import { appColors } from '../../utils/appColors';
+import { useI18n } from '../../i18n';
 
 interface BidControlsProps {
   step: number;
@@ -32,6 +33,7 @@ export default function BidControls({
   disabled = false,
   isSubmitting = false,
 }: BidControlsProps) {
+  const { t, isRTL } = useI18n();
   const [bidAmount, setBidAmount] = useState<number>(0);
   const inputRef = useRef<TextInput>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -195,7 +197,7 @@ export default function BidControls({
 
   return (
     <View style={styles.bottomCard}>
-      <View style={styles.bidControlsRow}>
+      <View style={[styles.bidControlsRow, isRTL && styles.bidControlsRowRTL]}>
         {/* Decrease Button */}
         <TouchableOpacity
           style={styles.adjustButton}
@@ -204,7 +206,7 @@ export default function BidControls({
           disabled={disabled || isSubmitting}
         >
           <Text style={styles.adjustIcon}>-</Text>
-          <Text style={styles.adjustText}>{formattedStep}</Text>
+          <Text style={[styles.adjustText, isRTL && styles.adjustTextRTL]}>{formattedStep}</Text>
         </TouchableOpacity>
 
         {/* Input + Current Bid Display */}
@@ -212,23 +214,26 @@ export default function BidControls({
           {/* User's bid input */}
           <TextInput
             ref={inputRef}
-            style={styles.bidInput}
+            style={[styles.bidInput, isRTL && styles.bidInputRTL]}
             value={formattedBid}
             onChangeText={handleBidAmountChange}
             keyboardType="numeric"
-            placeholder="Enter amount"
+            placeholder={t('bidControls.enterAmount')}
             placeholderTextColor={appColors.textMuted}
             editable={!disabled && !isSubmitting}
             selectTextOnFocus
+            textAlign={isRTL ? 'right' : 'center'}
           />
 
           {/* Current highest bid label */}
-          <Text style={styles.currentBidLabel}>
-            Current: {formattedCurrent}
+          <Text style={[styles.currentBidLabel, isRTL && styles.currentBidLabelRTL]}>
+            {t('bidControls.current')}: {formattedCurrent}
           </Text>
 
           {/* Min increment hint */}
-          <Text style={styles.minIncrementText}>Min step: {formattedStep}</Text>
+          <Text style={[styles.minIncrementText, isRTL && styles.minIncrementTextRTL]}>
+            {t('bidControls.minStep')}: {formattedStep}
+          </Text>
         </View>
 
         {/* Increase Button */}
@@ -239,7 +244,7 @@ export default function BidControls({
           disabled={disabled || isSubmitting}
         >
           <Text style={styles.adjustIcon}>+</Text>
-          <Text style={styles.adjustText}>{formattedStep}</Text>
+          <Text style={[styles.adjustText, isRTL && styles.adjustTextRTL]}>{formattedStep}</Text>
         </TouchableOpacity>
       </View>
 
@@ -255,7 +260,7 @@ export default function BidControls({
           }}
         >
           <Button
-            label="Make a bid"
+            label={t('bidControls.makeBid')}
             onPress={handlePlaceBid}
             buttonStyle={styles.makeBidButton}
             disabled={disabled || isSubmitting}
@@ -302,7 +307,9 @@ export default function BidControls({
                 ]}
               />
             </View>
-            <Text style={styles.placingBidText}>Placing your bid...</Text>
+            <Text style={[styles.placingBidText, isRTL && styles.placingBidTextRTL]}>
+              {t('bidControls.placingBid')}
+            </Text>
           </View>
         </Animated.View>
       </View>

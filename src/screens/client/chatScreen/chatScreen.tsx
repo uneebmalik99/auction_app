@@ -23,9 +23,11 @@ import ChatHeader from './ChatHeader';
 import MessageBubble from './MessageBubble';
 import ChatInput from './ChatInput';
 import { styles } from './styles';
+import { useI18n } from '../../../i18n';
 
 // ── Adjust this to your actual API upload endpoint ──────────────────────────
 export default function VehicleChatScreen({ route, navigation }: any) {
+  const { t } = useI18n();
   const { vehicleId, vehicleTitle } = route.params as {
     vehicleId: string;
     vehicleTitle: string;
@@ -89,8 +91,8 @@ export default function VehicleChatScreen({ route, navigation }: any) {
   const ListEmptyComponent = (
     <View style={styles.emptyWrap}>
       <Text style={{ fontSize: 40, opacity: 0.3 }}>💬</Text>
-      <Text style={styles.emptyText}>No messages yet</Text>
-      <Text style={styles.emptySubText}>Start the conversation</Text>
+      <Text style={styles.emptyText}>{t('chat.noMessages')}</Text>
+      <Text style={styles.emptySubText}>{t('chat.startConversation')}</Text>
     </View>
   );
 
@@ -132,7 +134,7 @@ export default function VehicleChatScreen({ route, navigation }: any) {
 
         {/* Typing indicator */}
         {isTyping && (
-          <Text style={styles.typingText}>Admin is typing…</Text>
+          <Text style={styles.typingText}>{t('chat.adminTyping')}</Text>
         )}
 
         {/* Input bar */}

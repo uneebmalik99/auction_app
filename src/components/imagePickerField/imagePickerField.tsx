@@ -3,6 +3,7 @@ import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 import { X } from 'lucide-react-native';
 import { styles } from './styles';
 import type { PickedImage } from '../../hooks/useImagePicker';
+import { useI18n } from '../../i18n';
 
 interface ImagePickerFieldProps {
   label?: string;
@@ -23,24 +24,29 @@ export default function ImagePickerField({
   onAddPress,
   onRemoveImage,
 }: ImagePickerFieldProps) {
+  const { t, isRTL } = useI18n();
   const canAddMore = images.length < maxImages;
 
   return (
     <View>
-      <Text style={styles.label}>{label}</Text>
-      <Text style={styles.helperText}>
-        {helperText ?? 'Add clear exterior and interior photos of the car.'}
-      </Text>
+      <Text style={[styles.label, isRTL && styles.labelRTL]}>{label}</Text>
+      {helperText && (
+        <Text style={[styles.helperText, isRTL && styles.helperTextRTL]}>
+          {helperText}
+        </Text>
+      )}
 
-      <View style={styles.row}>
+      <View style={[styles.row, isRTL && styles.rowRTL]}>
         {canAddMore && (
           <TouchableOpacity
             activeOpacity={0.8}
-            style={styles.addCard}
+            style={[styles.addCard, isRTL && styles.addCardRTL]}
             onPress={onAddPress}
           >
             <Text style={styles.addIcon}>＋</Text>
-            <Text style={styles.addText}>Add images</Text>
+            <Text style={[styles.addText, isRTL && styles.addTextRTL]}>
+              {t('imagePicker.addImages')}
+            </Text>
           </TouchableOpacity>
         )}
 
@@ -50,13 +56,13 @@ export default function ImagePickerField({
             data={images}
             keyExtractor={item => item.uri}
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.listContent}
+            contentContainerStyle={[styles.listContent, isRTL && styles.listContentRTL]}
             renderItem={({ item }) => (
-              <View style={styles.thumbWrapper}>
+              <View style={[styles.thumbWrapper, isRTL && styles.thumbWrapperRTL]}>
                 <Image source={{ uri: item.uri }} style={styles.thumb} />
                 {onRemoveImage ? (
                   <TouchableOpacity
-                    style={styles.removeButton}
+                    style={[styles.removeButton, isRTL && styles.removeButtonRTL]}
                     activeOpacity={0.8}
                     onPress={() => onRemoveImage(item.uri)}
                   >
@@ -69,10 +75,10 @@ export default function ImagePickerField({
         )}
       </View>
 
-      <Text style={styles.counterText}>
-        {images.length}/{maxImages} images selected
+      <Text style={[styles.counterText, isRTL && styles.counterTextRTL]}>
+        {images.length}/{maxImages} {t('imagePicker.imagesSelected')}
       </Text>
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? <Text style={[styles.errorText, isRTL && styles.errorTextRTL]}>{error}</Text> : null}
     </View>
   );
 }

@@ -22,8 +22,10 @@ import { getItem } from '../../../utils/methods';
 import { appColors } from '../../../utils/appColors';
 import { Heart, PlayCircle, Clock, X, Search } from 'lucide-react-native';
 import { height, width } from '../../../utils/dimensions';
+import { useI18n } from '../../../i18n';
 
 export default function Favorites() {
+  const { t } = useI18n();
   const dispatch = useAppDispatch();
   const favoriteIds = useAppSelector(
     state => state.profile.user?.favorites ?? [],
@@ -71,7 +73,7 @@ export default function Favorites() {
       dispatch(toggleFavorite(item._id));
     } catch (err) {
       console.error('Failed to remove favorite:', err);
-      setError('Failed to remove from favorites');
+      setError(t('favorites.failedToRemove'));
     }
   };
 
@@ -79,14 +81,15 @@ export default function Favorites() {
     try {
       setError(null);
       const apiItems: any = await fetchItems();
+      console.log('apiItems', apiItems);
       const vehicles = apiItems?.vehicles || apiItems || [];
       setItems(Array.isArray(vehicles) ? vehicles : []);
     } catch (e) {
-      console.error('Failed to load items', e);
+      console.error('Failed to load items favorites', e);
       setError(
         e instanceof Error
           ? e.message
-          : 'Unable to load items. Please try again.',
+          : t('favorites.unableToLoad'),
       );
     } finally {
       setLoading(false);
@@ -113,7 +116,7 @@ export default function Favorites() {
           <View style={styles.loadingSpinnerContainer}>
             <ActivityIndicator size="large" color={appColors.favorite} />
           </View>
-          <Text style={styles.loadingText}>Loading favorites...</Text>
+          <Text style={styles.loadingText}>{t('favorites.loading')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -161,11 +164,11 @@ export default function Favorites() {
           <View style={styles.headerContent}>
             <View style={styles.headerBadge}>
               <Heart size={16} color={appColors.favorite} fill={appColors.favorite} />
-              <Text style={styles.headerBadgeText}>Your Collection</Text>
+              <Text style={styles.headerBadgeText}>{t('favorites.yourCollection')}</Text>
             </View>
-            <Text style={styles.headerTitle}>Favorite Vehicles</Text>
+            <Text style={styles.headerTitle}>{t('favorites.favoriteVehicles')}</Text>
             <Text style={styles.headerSubtitle}>
-              Keep track of the vehicles you love. Quick access to your saved auctions.
+              {t('favorites.subtitle')}
             </Text>
           </View>
 
@@ -177,7 +180,7 @@ export default function Favorites() {
               </View>
               <View style={styles.statContent}>
                 <Text style={styles.statValue}>{stats.total}</Text>
-                <Text style={styles.statLabel}>Saved Vehicles</Text>
+                <Text style={styles.statLabel}>{t('favorites.savedVehicles')}</Text>
               </View>
             </View>
             <View style={styles.statCard}>
@@ -186,7 +189,7 @@ export default function Favorites() {
               </View>
               <View style={styles.statContent}>
                 <Text style={styles.statValue}>{stats.live}</Text>
-                <Text style={styles.statLabel}>Live Now</Text>
+                <Text style={styles.statLabel}>{t('favorites.liveNow')}</Text>
               </View>
             </View>
             <View style={styles.statCard}>
@@ -195,7 +198,7 @@ export default function Favorites() {
               </View>
               <View style={styles.statContent}>
                 <Text style={styles.statValue}>{stats.upcoming}</Text>
-                <Text style={styles.statLabel}>Upcoming</Text>
+                <Text style={styles.statLabel}>{t('favorites.upcoming')}</Text>
               </View>
             </View>
           </View>
@@ -228,9 +231,9 @@ export default function Favorites() {
               <View style={styles.emptyIconBackground} />
               <Heart size={80} color={appColors.textMuted} />
             </View>
-            <Text style={styles.emptyTitle}>No Favorites Yet</Text>
+            <Text style={styles.emptyTitle}>{t('favorites.noFavoritesYet')}</Text>
             <Text style={styles.emptySubtitle}>
-              Start adding vehicles to your favorites by clicking the heart icon on any vehicle card
+              {t('favorites.emptySubtitle')}
             </Text>
             <TouchableOpacity
               style={styles.emptyButton}
@@ -238,7 +241,7 @@ export default function Favorites() {
               activeOpacity={0.8}
             >
               <Search size={20} color={appColors.white} />
-              <Text style={styles.emptyButtonText}>Browse Auctions</Text>
+              <Text style={styles.emptyButtonText}>{t('favorites.browseAuctions')}</Text>
             </TouchableOpacity>
           </View>
         )}

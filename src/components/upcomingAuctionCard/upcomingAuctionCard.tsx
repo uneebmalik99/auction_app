@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import { Megaphone, Clock, Calendar, Fuel, Gauge, Settings2, Eye, User } from 'lucide-react-native';
+import { Megaphone, Clock, Calendar, Fuel, Gauge, Settings2, Eye, User, Heart } from 'lucide-react-native';
 import { AuctionItem } from '../../utils/types';
 import { appColors } from '../../utils/appColors';
 import { height, width } from '../../utils/dimensions';
@@ -14,9 +14,11 @@ import { height, width } from '../../utils/dimensions';
 interface UpcomingAuctionCardProps {
   item: AuctionItem;
   onPress?: () => void;
+  isFavorite?: boolean;
+  onFavoritePress?: () => void;
 }
 
-export default function UpcomingAuctionCard({ item, onPress }: UpcomingAuctionCardProps) {
+export default function UpcomingAuctionCard({ item, onPress, isFavorite = false, onFavoritePress }: UpcomingAuctionCardProps) {
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
@@ -69,6 +71,24 @@ export default function UpcomingAuctionCard({ item, onPress }: UpcomingAuctionCa
           <Clock size={12} color={appColors.white} />
           <Text style={styles.timerBadgeText}>{getTimeUntilStart()}</Text>
         </View>
+
+        {/* Like Icon */}
+        <TouchableOpacity
+          style={styles.likeButton}
+          activeOpacity={0.8}
+          onPress={(e) => {
+            e.stopPropagation();
+            if (onFavoritePress) {
+              onFavoritePress();
+            }
+          }}
+        >
+          <Heart 
+            size={20} 
+            color={isFavorite ? appColors.red : appColors.white} 
+            fill={isFavorite ? appColors.red : 'none'}
+          />
+        </TouchableOpacity>
       </View>
 
       {/* Content Section */}
@@ -195,6 +215,16 @@ const styles = StyleSheet.create({
     color: appColors.white,
     fontSize: 12,
     fontWeight: '600',
+  },
+  likeButton: {
+    position: 'absolute',
+    bottom: 12,
+    right: 12,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 20,
+    padding: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   contentContainer: {
     padding: width(4),

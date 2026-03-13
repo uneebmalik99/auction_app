@@ -16,10 +16,12 @@ import { useIsFocused } from '@react-navigation/native';
 import { formatRemainingTime, showSuccessToast } from '../../../utils/methods';
 import Swiper from 'react-native-swiper';
 import { useAppSelector } from '../../../redux/hooks';
+import { useI18n } from '../../../i18n';
 
 export default function ItemDetails() {
   const isFocused = useIsFocused();
   const route = useRoute<any>();
+  const { t, isRTL } = useI18n();
   const params = route.params as
     | { auctionId: string; item?: AuctionItem; myBids?: boolean }
     | undefined;
@@ -49,7 +51,7 @@ export default function ItemDetails() {
     item?.biddingEndsAt !== undefined
   ) {
     if (item.biddingStartsAt && now < Date.parse(item.biddingStartsAt || '')) {
-      computedFooterLabel = 'Starts in';
+      computedFooterLabel = t('itemDetails.startsIn');
       computedFooterValue = formatRemainingTime(
         Date.parse(item?.biddingStartsAt || ''),
       );
@@ -57,15 +59,15 @@ export default function ItemDetails() {
       item.biddingEndsAt &&
       now < Date.parse(item?.biddingEndsAt || '')
     ) {
-      computedFooterLabel = 'Ends in';
+      computedFooterLabel = t('itemDetails.endsIn');
       computedFooterValue = formatRemainingTime(
         Date.parse(item?.biddingEndsAt || ''),
       );
     } else if (item.biddingEndsAt) {
-      computedFooterLabel = 'Ended';
-      computedFooterValue = 'Auction ended';
+      computedFooterLabel = t('itemDetails.ended');
+      computedFooterValue = t('itemDetails.auctionEnded');
     } else if (item.biddingStartsAt) {
-      computedFooterLabel = 'Starts in';
+      computedFooterLabel = t('itemDetails.startsIn');
       computedFooterValue = formatRemainingTime(
         Date.parse(item?.biddingStartsAt || ''),
       );
@@ -73,48 +75,48 @@ export default function ItemDetails() {
   }
 
   const specs = [
-    { label: 'Make', value: item?.make },
-    { label: 'Model', value: item?.model },
+    { label: t('itemDetails.make'), value: item?.make },
+    { label: t('itemDetails.model'), value: item?.model },
     {
-      label: 'Year',
+      label: t('itemDetails.year'),
       value: item?.year != null ? String(item.year) : undefined,
     },
-    { label: 'Location', value: item?.location },
-    { label: 'Fuel type', value: item?.fuelType },
-    { label: 'Transmission', value: item?.transmission },
-    { label: 'Drive type', value: item?.driveType },
+    { label: t('itemDetails.location'), value: item?.location },
+    { label: t('itemDetails.fuelType'), value: item?.fuelType },
+    { label: t('itemDetails.transmission'), value: item?.transmission },
+    { label: t('itemDetails.driveType'), value: item?.driveType },
     {
-      label: 'Mileage',
+      label: t('itemDetails.mileage'),
       value:
         item?.mileage != null
           ? `${item.mileage.toLocaleString('en-US')} km`
           : undefined,
     },
-    { label: 'Engine capacity', value: item?.engineCapacity },
+    { label: t('itemDetails.engineCapacity'), value: item?.engineCapacity },
     {
-      label: 'Horsepower',
+      label: t('itemDetails.horsepower'),
       value: item?.horsePower != null ? `${item.horsePower} hp` : undefined,
     },
-    { label: 'Color', value: item?.color },
-    { label: 'VIN', value: item?.vin },
-    { label: 'Reg. number', value: item?.registrationNumber },
+    { label: t('itemDetails.color'), value: item?.color },
+    { label: t('itemDetails.vin'), value: item?.vin },
+    { label: t('itemDetails.regNumber'), value: item?.registrationNumber },
   ].filter(row => row.value);
 
   const featureLabels: string[] = [];
   const features = item?.features;
   if (features) {
-    if (features.sunroof) featureLabels.push('Sunroof');
-    if (features.leatherSeats) featureLabels.push('Leather seats');
-    if (features.navigation) featureLabels.push('Navigation');
-    if (features.parkingSensors) featureLabels.push('Parking sensors');
-    if (features.heatedSeats) featureLabels.push('Heated seats');
-    if (features.bluetooth) featureLabels.push('Bluetooth');
-    if (features.appleCarPlay) featureLabels.push('Apple CarPlay');
-    if (features.androidAuto) featureLabels.push('Android Auto');
-    if (features.wirelessCharging) featureLabels.push('Wireless charging');
-    if (features.camera360) featureLabels.push('360° camera');
-    if (features.adaptiveCruise) featureLabels.push('Adaptive cruise');
-    if (features.laneAssist) featureLabels.push('Lane assist');
+    if (features.sunroof) featureLabels.push(t('itemDetails.feature.sunroof'));
+    if (features.leatherSeats) featureLabels.push(t('itemDetails.feature.leatherSeats'));
+    if (features.navigation) featureLabels.push(t('itemDetails.feature.navigation'));
+    if (features.parkingSensors) featureLabels.push(t('itemDetails.feature.parkingSensors'));
+    if (features.heatedSeats) featureLabels.push(t('itemDetails.feature.heatedSeats'));
+    if (features.bluetooth) featureLabels.push(t('itemDetails.feature.bluetooth'));
+    if (features.appleCarPlay) featureLabels.push(t('itemDetails.feature.appleCarPlay'));
+    if (features.androidAuto) featureLabels.push(t('itemDetails.feature.androidAuto'));
+    if (features.wirelessCharging) featureLabels.push(t('itemDetails.feature.wirelessCharging'));
+    if (features.camera360) featureLabels.push(t('itemDetails.feature.camera360'));
+    if (features.adaptiveCruise) featureLabels.push(t('itemDetails.feature.adaptiveCruise'));
+    if (features.laneAssist) featureLabels.push(t('itemDetails.feature.laneAssist'));
   }
 
   useEffect(() => {
@@ -134,9 +136,9 @@ export default function ItemDetails() {
   // Show success message when bid is confirmed
   useEffect(() => {
     if (isBidSuccess) {
-      showSuccessToast('Bid Placed Successfully!', 'Your bid has been placed and confirmed.');
+      showSuccessToast(t('myBids.bidPlaced'), t('myBids.bidConfirmed'));
     }
-  }, [isBidSuccess]);
+  }, [isBidSuccess, t]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -153,10 +155,10 @@ export default function ItemDetails() {
           <View style={styles.mediaInner}>
             <View style={styles.mediaTopRow}>
               <View style={styles.mediaBadge}>
-                <Text style={styles.mediaBadgeText}>
+                <Text style={[styles.mediaBadgeText, isRTL && styles.mediaBadgeTextRTL]}>
                   {item?.photos?.length
-                    ? `${item.photos.length} photos`
-                    : 'No photos'}
+                    ? `${item.photos.length} ${t('itemDetails.photos')}`
+                    : t('itemDetails.noPhotos')}
                 </Text>
               </View>
 
@@ -187,7 +189,9 @@ export default function ItemDetails() {
               </Swiper>
             ) : (
               <View style={styles.carPlaceholder}>
-                <Text style={styles.carPlaceholderText}>Car preview</Text>
+                <Text style={[styles.carPlaceholderText, isRTL && styles.carPlaceholderTextRTL]}>
+                  {t('itemDetails.carPreview')}
+                </Text>
               </View>
             )}
           </View>
@@ -213,15 +217,17 @@ export default function ItemDetails() {
         {/* Details card */}
         <View style={styles.detailsCard}>
           {/* Title + price */}
-          <View style={styles.detailsHeaderRow}>
+          <View style={[styles.detailsHeaderRow, isRTL && styles.detailsHeaderRowRTL]}>
             <View>
-              <Text style={styles.detailsTitle}>{item?.title ?? ''}</Text>
-              <Text style={styles.detailsStartingLabel}>Starting price</Text>
-              <View style={styles.detailsPriceRow}>
-                <Text style={styles.detailsPriceMain}>
+              <Text style={[styles.detailsTitle, isRTL && styles.detailsTitleRTL]}>{item?.title ?? ''}</Text>
+              <Text style={[styles.detailsStartingLabel, isRTL && styles.detailsStartingLabelRTL]}>
+                {t('itemDetails.startingPrice')}
+              </Text>
+              <View style={[styles.detailsPriceRow, isRTL && styles.detailsPriceRowRTL]}>
+                <Text style={[styles.detailsPriceMain, isRTL && styles.detailsPriceMainRTL]}>
                   {item?.startingPrice != null ? `${item.startingPrice} $` : ''}
                 </Text>
-                <Text style={styles.detailsPriceSecondary}>
+                <Text style={[styles.detailsPriceSecondary, isRTL && styles.detailsPriceSecondaryRTL]}>
                   {item?.reservePrice} $
                 </Text>
               </View>
@@ -233,7 +239,7 @@ export default function ItemDetails() {
           </View>
 
           {/* Tabs */}
-          <View style={styles.tabsRow}>
+          <View style={[styles.tabsRow, isRTL && styles.tabsRowRTL]}>
             <TouchableOpacity
               style={styles.tabButton}
               activeOpacity={0.8}
@@ -242,10 +248,11 @@ export default function ItemDetails() {
               <Text
                 style={[
                   styles.tabLabel,
+                  isRTL && styles.tabLabelRTL,
                   activeTab === 'description' && styles.tabLabelActive,
                 ]}
               >
-                Description
+                {t('itemDetails.description')}
               </Text>
               {activeTab === 'description' && (
                 <View style={styles.tabIndicator} />
@@ -260,10 +267,11 @@ export default function ItemDetails() {
               <Text
                 style={[
                   styles.tabLabel,
+                  isRTL && styles.tabLabelRTL,
                   activeTab === 'bids' && styles.tabLabelActive,
                 ]}
               >
-                Bids
+                {t('itemDetails.bids')}
               </Text>
               {activeTab === 'bids' && <View style={styles.tabIndicator} />}
             </TouchableOpacity>
@@ -277,10 +285,11 @@ export default function ItemDetails() {
                 <Text
                   style={[
                     styles.tabLabel,
+                    isRTL && styles.tabLabelRTL,
                     activeTab === 'myBids' && styles.tabLabelActive,
                   ]}
                 >
-                  My Bids
+                  {t('itemDetails.myBids')}
                 </Text>
                 {activeTab === 'myBids' && <View style={styles.tabIndicator} />}
               </TouchableOpacity>
@@ -291,8 +300,10 @@ export default function ItemDetails() {
             <View>
               {item?.description ? (
                 <>
-                  <Text style={styles.detailsSectionTitle}>Description</Text>
-                  <Text style={styles.descriptionText}>
+                  <Text style={[styles.detailsSectionTitle, isRTL && styles.detailsSectionTitleRTL]}>
+                    {t('itemDetails.description')}
+                  </Text>
+                  <Text style={[styles.descriptionText, isRTL && styles.descriptionTextRTL]}>
                     {item?.description ?? ''}
                   </Text>
                 </>
@@ -300,12 +311,14 @@ export default function ItemDetails() {
 
               {specs.length > 0 ? (
                 <>
-                  <Text style={styles.detailsSectionTitle}>Details</Text>
+                  <Text style={[styles.detailsSectionTitle, isRTL && styles.detailsSectionTitleRTL]}>
+                    {t('itemDetails.details')}
+                  </Text>
                   <View style={styles.specsGrid}>
                     {specs.map(row => (
-                      <View key={row.label} style={styles.specRow}>
-                        <Text style={styles.specLabel}>{row.label}</Text>
-                        <Text style={styles.specValue}>{row.value}</Text>
+                      <View key={row.label} style={[styles.specRow, isRTL && styles.specRowRTL]}>
+                        <Text style={[styles.specLabel, isRTL && styles.specLabelRTL]}>{row.label}</Text>
+                        <Text style={[styles.specValue, isRTL && styles.specValueRTL]}>{row.value}</Text>
                       </View>
                     ))}
                   </View>
@@ -314,11 +327,13 @@ export default function ItemDetails() {
 
               {featureLabels.length > 0 ? (
                 <>
-                  <Text style={styles.detailsSectionTitle}>Features</Text>
-                  <View style={styles.featuresList}>
+                  <Text style={[styles.detailsSectionTitle, isRTL && styles.detailsSectionTitleRTL]}>
+                    {t('itemDetails.features')}
+                  </Text>
+                  <View style={[styles.featuresList, isRTL && styles.featuresListRTL]}>
                     {featureLabels.map(label => (
                       <View key={label} style={styles.featureChip}>
-                        <Text style={styles.featureText}>{label}</Text>
+                        <Text style={[styles.featureText, isRTL && styles.featureTextRTL]}>{label}</Text>
                       </View>
                     ))}
                   </View>
@@ -331,8 +346,8 @@ export default function ItemDetails() {
               showsVerticalScrollIndicator={false}
             >
               {bids.length === 0 ? (
-                <Text style={styles.descriptionText}>
-                  You haven't placed any bids yet.
+                <Text style={[styles.descriptionText, isRTL && styles.descriptionTextRTL]}>
+                  {t('itemDetails.noBidsPlaced')}
                 </Text>
               ) : (
                 bids
@@ -373,20 +388,20 @@ export default function ItemDetails() {
                         </View>
 
                         <View style={styles.bidderInfo}>
-                          <Text style={[styles.bidderName]}>
-                            {bidderName} {isMyBid && '(You)'}
+                          <Text style={[styles.bidderName, isRTL && styles.bidderNameRTL]}>
+                            {bidderName} {isMyBid && t('itemDetails.you')}
                           </Text>
                           {bid.createdAt ? (
-                            <Text style={styles.bidderPlace}>
+                            <Text style={[styles.bidderPlace, isRTL && styles.bidderPlaceRTL]}>
                               {new Date(bid.createdAt).toLocaleString()}
                             </Text>
                           ) : null}
                         </View>
 
-                        <View style={styles.bidAmounts}>
-                          <Text style={[styles.bidAmountMain]}>{amount}</Text>
+                        <View style={[styles.bidAmounts, isRTL && styles.bidAmountsRTL]}>
+                          <Text style={[styles.bidAmountMain, isRTL && styles.bidAmountMainRTL]}>{amount}</Text>
                           {previous ? (
-                            <Text style={styles.bidAmountSecondary}>
+                            <Text style={[styles.bidAmountSecondary, isRTL && styles.bidAmountSecondaryRTL]}>
                               {previous}
                             </Text>
                           ) : null}
@@ -402,8 +417,8 @@ export default function ItemDetails() {
               showsVerticalScrollIndicator={false}
             >
               {bids.length === 0 ? (
-                <Text style={styles.descriptionText}>
-                  No bids yet. Be the first to place a bid.
+                <Text style={[styles.descriptionText, isRTL && styles.descriptionTextRTL]}>
+                  {t('itemDetails.noBidsYet')}
                 </Text>
               ) : (
                 bids.map(bid => {
@@ -430,18 +445,18 @@ export default function ItemDetails() {
                       </View>
 
                       <View style={styles.bidderInfo}>
-                        <Text style={styles.bidderName}>{bidderName}</Text>
+                        <Text style={[styles.bidderName, isRTL && styles.bidderNameRTL]}>{bidderName}</Text>
                         {bid.createdAt ? (
-                          <Text style={styles.bidderPlace}>
+                          <Text style={[styles.bidderPlace, isRTL && styles.bidderPlaceRTL]}>
                             {new Date(bid.createdAt).toLocaleString()}
                           </Text>
                         ) : null}
                       </View>
 
-                      <View style={styles.bidAmounts}>
-                        <Text style={styles.bidAmountMain}>{amount}</Text>
+                      <View style={[styles.bidAmounts, isRTL && styles.bidAmountsRTL]}>
+                        <Text style={[styles.bidAmountMain, isRTL && styles.bidAmountMainRTL]}>{amount}</Text>
                         {previous ? (
-                          <Text style={styles.bidAmountSecondary}>
+                          <Text style={[styles.bidAmountSecondary, isRTL && styles.bidAmountSecondaryRTL]}>
                             {previous}
                           </Text>
                         ) : null}

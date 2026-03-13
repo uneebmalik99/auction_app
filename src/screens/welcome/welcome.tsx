@@ -9,7 +9,7 @@ import { useI18n } from '../../i18n';
 
 export default function Welcome() {
   const navigation = useNavigation<RootNavigationProp>();
-  const { language, setLanguage, t } = useI18n();
+  const { language, setLanguage, t, isRTL } = useI18n();
 
   const handleSignIn = () => {
     navigation.navigate(screenNames.authentication, { initialTab: 'signIn' });
@@ -24,8 +24,8 @@ export default function Welcome() {
       <Header title="AuctionApp" showBackButton={false} />
 
       <View style={styles.container}>
-        <View style={styles.languageRow}>
-          <Text style={styles.languageLabel}>{t('common.language')}</Text>
+        <View style={[styles.languageRow, isRTL && styles.languageRowRTL]}>
+          <Text style={[styles.languageLabel, isRTL && styles.languageLabelRTL]}>{t('common.language')}</Text>
           <Dropdown
             options={[
               { label: t('common.english'), value: 'en' },
@@ -38,18 +38,18 @@ export default function Welcome() {
         </View>
 
         <View style={styles.heroContainer}>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{t('welcome.badge')}</Text>
+          <View style={[styles.badge, isRTL && styles.badgeRTL]}>
+            <Text style={[styles.badgeText, isRTL && styles.badgeTextRTL]}>{t('welcome.badge')}</Text>
           </View>
 
-          <Text style={styles.title}>{t('welcome.title1')}</Text>
-          <Text style={styles.title}>{t('welcome.title2')}</Text>
+          <Text style={[styles.title, isRTL && styles.titleRTL]}>{t('welcome.title1')}</Text>
+          <Text style={[styles.title, isRTL && styles.titleRTL]}>{t('welcome.title2')}</Text>
 
-          <Text style={styles.subtitle}>{t('welcome.subtitle')}</Text>
+          <Text style={[styles.subtitle, isRTL && styles.subtitleRTL]}>{t('welcome.subtitle')}</Text>
 
-          <View style={styles.highlightRow}>
+          <View style={[styles.highlightRow, isRTL && styles.highlightRowRTL]}>
             <View style={styles.highlightPill}>
-              <Text style={styles.highlightText}>
+              <Text style={[styles.highlightText, isRTL && styles.highlightTextRTL]}>
                 {t('welcome.verifiedSellers')}
               </Text>
             </View>
@@ -57,7 +57,7 @@ export default function Welcome() {
               <Text style={styles.highlightText}>Secure payments</Text>
             </View> */}
             <View style={styles.highlightPill}>
-              <Text style={styles.highlightText}>
+              <Text style={[styles.highlightText, isRTL && styles.highlightTextRTL]}>
                 {t('welcome.liveBidding')}
               </Text>
             </View>

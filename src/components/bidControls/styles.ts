@@ -24,16 +24,25 @@ export const styles = StyleSheet.create({
       },
     }),
   },
+  bidInputRTL: {
+    textAlign: 'center',
+  },
   currentBidLabel: {
     marginTop: 6,
     fontSize: 14,
     color: '#333',
     fontWeight: '600',
   },
+  currentBidLabelRTL: {
+    textAlign: 'right',
+  },
   minIncrementText: {
     marginTop: 4,
     fontSize: 12,
     color: '#888',
+  },
+  minIncrementTextRTL: {
+    textAlign: 'right',
   },
 
   bottomCard: {
@@ -50,6 +59,9 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: height(1.5),
+  },
+  bidControlsRowRTL: {
+    flexDirection: 'row-reverse',
   },
   adjustButton: {
     flexDirection: 'row',
@@ -72,6 +84,9 @@ export const styles = StyleSheet.create({
   adjustText: {
     fontSize: 13,
     color: appColors.textPrimary,
+  },
+  adjustTextRTL: {
+    textAlign: 'right',
   },
   currentBidBlock: {
     alignItems: 'center',
@@ -118,5 +133,8 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#f97316',
+  },
+  placingBidTextRTL: {
+    textAlign: 'right',
   },
 });

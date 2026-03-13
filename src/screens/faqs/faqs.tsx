@@ -30,7 +30,7 @@ function getFaqAnswer(item: FaqItem) {
 }
 
 export default function Faqs() {
-  const { t } = useI18n();
+  const { t, isRTL } = useI18n();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,11 +45,11 @@ export default function Faqs() {
       setFaqs(Array.isArray(data) ? data : []);
     } catch (e) {
       const message =
-        e instanceof Error ? e.message : 'Failed to load FAQs. Please try again.';
+        e instanceof Error ? e.message : t('faqs.loadFailed');
       setError(message);
-      showErrorToast('Failed to load FAQs', message);
+      showErrorToast(t('faqs.loadFailedTitle'), message);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     (async () => {
@@ -97,7 +97,7 @@ export default function Faqs() {
         {loading ? (
           <View style={styles.center}>
             <ActivityIndicator size="small" color={appColors.textPrimary} />
-            <Text style={styles.loadingText}>{t('faqs.loading')}</Text>
+            <Text style={[styles.loadingText, isRTL && styles.loadingTextRTL]}>{t('faqs.loading')}</Text>
           </View>
         ) : (
           <>
@@ -126,9 +126,9 @@ export default function Faqs() {
                 />
               }
               ListEmptyComponent={
-                <View style={styles.center}>
-                  <Text style={styles.emptyText}>{emptyText}</Text>
-                </View>
+            <View style={styles.center}>
+              <Text style={[styles.emptyText, isRTL && styles.emptyTextRTL]}>{emptyText}</Text>
+            </View>
               }
               renderItem={({ item, index }) => {
                 const id = getFaqId(item, index);
@@ -141,9 +141,9 @@ export default function Faqs() {
                     <TouchableOpacity
                       activeOpacity={0.8}
                       onPress={() => setExpandedId(isExpanded ? null : id)}
-                      style={styles.cardHeader}
+                      style={[styles.cardHeader, isRTL && styles.cardHeaderRTL]}
                     >
-                      <Text style={styles.question} numberOfLines={2}>
+                      <Text style={[styles.question, isRTL && styles.questionRTL]} numberOfLines={2}>
                         {q}
                       </Text>
                       <Text style={styles.chevron}>
@@ -153,7 +153,7 @@ export default function Faqs() {
 
                     {isExpanded ? (
                       <View style={styles.cardBody}>
-                        <Text style={styles.answer}>{a || '—'}</Text>
+                        <Text style={[styles.answer, isRTL && styles.answerRTL]}>{a || '—'}</Text>
                       </View>
                     ) : null}
                   </View>

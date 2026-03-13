@@ -18,7 +18,6 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import CheckBox from '../checkBox/checkBox';
-import * as Keychain from 'react-native-keychain';
 
 interface AuthTabProps {
   activeTab: AuthTab;
@@ -32,7 +31,7 @@ export default function SignIn({ activeTab, setActiveTab }: AuthTabProps) {
   const [rememberMe, setRememberMe] = useState(false);
   const navigation = useNavigation<RootNavigationProp>();
   const dispatch = useAppDispatch();
-  const { t } = useI18n();
+  const { t, isRTL } = useI18n();
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -47,17 +46,8 @@ export default function SignIn({ activeTab, setActiveTab }: AuthTabProps) {
       if (data.token) {
         await setAuthToken(data.token);
         if (rememberMe) {
-          await Keychain.setGenericPassword(
-            data?.user?.role || '',
-            data.token || '',
-            // {
-            //   accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY, // Requires biometrics
-            //   accessible:
-            //     Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
-            //   //   // Optional: higher security
-            //   //   // securityLevel: Keychain.SECURITY_LEVEL.SECURE_HARDWARE,
-            // },
-          );
+          // Save role to AsyncStorage for remember me functionality
+          await saveItem('user_role', data?.user?.role || '');
         }
       }
 
@@ -95,13 +85,6 @@ export default function SignIn({ activeTab, setActiveTab }: AuthTabProps) {
       // const isAdmin = role === 2;
 
       console.log('data.token', data);
-
-      // console.log('data.token', data.token, {
-      //   accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY, // Requires biometrics
-      //   accessible: Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
-      //   // Optional: higher security
-      //   // securityLevel: Keychain.SECURITY_LEVEL.SECURE_HARDWARE,
-      // });
 
       await saveItem('auth_token', data.token || '');
       console.log('role', role);
@@ -171,7 +154,7 @@ export default function SignIn({ activeTab, setActiveTab }: AuthTabProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>{t('signIn.header')}</Text>
+      <Text style={[styles.headerText, isRTL && styles.headerTextRTL]}>{t('signIn.header')}</Text>
 
       <Input
         label={t('signIn.email')}
@@ -190,7 +173,7 @@ export default function SignIn({ activeTab, setActiveTab }: AuthTabProps) {
         placeholder="••••••••"
       />
 
-      <View style={styles.helperRow}>
+      <View style={[styles.helperRow, isRTL && styles.helperRowRTL]}>
         <CheckBox
           checked={rememberMe}
           onToggle={toggleRememberMe}
@@ -199,7 +182,7 @@ export default function SignIn({ activeTab, setActiveTab }: AuthTabProps) {
           labelStyle={styles.checkboxLabel}
         />
         <TouchableOpacity onPress={handleForgotPassword}>
-          <Text style={styles.helperText}>{t('signIn.forgotPassword')}</Text>
+          <Text style={[styles.helperText, isRTL && styles.helperTextRTL]}>{t('signIn.forgotPassword')}</Text>
         </TouchableOpacity>
       </View>
 

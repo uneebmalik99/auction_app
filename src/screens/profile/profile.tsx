@@ -26,7 +26,6 @@ import { deleteAccount, logout, setAuthToken } from '../../api/autentication';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { clearUser } from '../../redux/profileSlice';
 import { getItem, removeItem, showErrorToast } from '../../utils/methods';
-import * as Keychain from 'react-native-keychain';
 
 export default function Profile() {
   const navigation = useNavigation<RootNavigationProp>();
@@ -70,11 +69,10 @@ export default function Profile() {
       const logoutResponse = await logout(token || undefined);
       console.log('logoutResponse', logoutResponse);
       if (logoutResponse?.message === 'Logged out successfully') {
-        // await Keychain.resetGenericPassword();
-
-        // Clear token everywhere
+        // Clear token and role from AsyncStorage
         await setAuthToken(null);
         await removeItem('auth_token');
+        await removeItem('user_role');
 
         dispatch(clearUser());
 
@@ -118,6 +116,7 @@ export default function Profile() {
       if (deleteAccountResponse?.message === 'Account deleted successfully') {
         await setAuthToken(null);
         await removeItem('auth_token');
+        await removeItem('user_role');
 
         dispatch(clearUser());
 

@@ -26,9 +26,15 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     color: appColors.textMuted,
   },
+  loadingTextRTL: {
+    textAlign: 'right',
+  },
   emptyText: {
     fontSize: 13,
     color: appColors.textMuted,
+    textAlign: 'center',
+  },
+  emptyTextRTL: {
     textAlign: 'center',
   },
   listContent: {
@@ -47,12 +53,20 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  cardHeaderRTL: {
+    flexDirection: 'row-reverse',
+  },
   question: {
     flex: 1,
     fontSize: 14,
     fontWeight: '700',
     color: appColors.textPrimary,
     paddingRight: 10,
+  },
+  questionRTL: {
+    paddingRight: 0,
+    paddingLeft: 10,
+    textAlign: 'right',
   },
   chevron: {
     width: 22,
@@ -71,6 +85,9 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     color: appColors.textSecondary,
     lineHeight: 19,
+  },
+  answerRTL: {
+    textAlign: 'right',
   },
 });
 

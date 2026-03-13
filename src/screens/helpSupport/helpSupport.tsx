@@ -34,7 +34,7 @@ const SUPPORT_EMAIL = 'therevolutiontechnologies@gmail.com';
 
 export default function HelpSupport() {
   const navigation = useNavigation<RootNavigationProp>();
-  const { t } = useI18n();
+  const { t, isRTL } = useI18n();
 
   const [isTicketSheetVisible, setIsTicketSheetVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -157,8 +157,8 @@ export default function HelpSupport() {
 
       <View style={styles.container}>
         <View style={styles.introCard}>
-          <Text style={styles.title}>{t('helpSupport.howCanHelp')}</Text>
-          <Text style={styles.subtitle}>{t('helpSupport.subtitle')}</Text>
+          <Text style={[styles.title, isRTL && styles.titleRTL]}>{t('helpSupport.howCanHelp')}</Text>
+          <Text style={[styles.subtitle, isRTL && styles.subtitleRTL]}>{t('helpSupport.subtitle')}</Text>
         </View>
 
         <View style={styles.actionsContainer}>
@@ -208,8 +208,8 @@ export default function HelpSupport() {
         >
           <View style={styles.sheet}>
             <View style={styles.sheetHandle} />
-            <Text style={styles.sheetTitle}>{t('ticket.title')}</Text>
-            <Text style={styles.sheetSubtitle}>{t('ticket.subtitle')}</Text>
+            <Text style={[styles.sheetTitle, isRTL && styles.sheetTitleRTL]}>{t('ticket.title')}</Text>
+            <Text style={[styles.sheetSubtitle, isRTL && styles.sheetSubtitleRTL]}>{t('ticket.subtitle')}</Text>
 
             <ScrollView
               style={styles.sheetScroll}

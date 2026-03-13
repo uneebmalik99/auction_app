@@ -7,19 +7,23 @@ import {
   StyleSheet,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { Check, Clock, Calendar, Fuel, Gauge, Settings2, Eye, User } from 'lucide-react-native';
+import { Check, Clock, Calendar, Fuel, Gauge, Settings2, Eye, User, Heart } from 'lucide-react-native';
 import { AuctionItem } from '../../utils/types';
 import { appColors } from '../../utils/appColors';
 import { formatRemainingTime } from '../../utils/methods';
 import { height, width } from '../../utils/dimensions';
+import { useI18n } from '../../i18n';
 
 interface LiveAuctionCardProps {
   item: AuctionItem;
   onPress?: () => void;
   onViewBidDetails?: (vehicleId: string) => void;
+  isFavorite?: boolean;
+  onFavoritePress?: () => void;
 }
 
-export default function LiveAuctionCard({ item, onPress, onViewBidDetails }: LiveAuctionCardProps) {
+export default function LiveAuctionCard({ item, onPress, onViewBidDetails, isFavorite = false, onFavoritePress }: LiveAuctionCardProps) {
+  const { t, isRTL } = useI18n();
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
@@ -122,21 +126,27 @@ export default function LiveAuctionCard({ item, onPress, onViewBidDetails }: Liv
           <Image source={{ uri: imageUrl }} style={styles.image} />
         ) : (
           <View style={[styles.image, styles.imagePlaceholder]}>
-            <Text style={styles.placeholderText}>No Image</Text>
+            <Text style={[styles.placeholderText, isRTL && styles.placeholderTextRTL]}>
+              {t('liveAuctionCard.noImage')}
+            </Text>
           </View>
         )}
 
         {/* Video Badge */}
         {hasVideo && (
-          <View style={styles.videoBadge}>
-            <Text style={styles.videoBadgeText}>VIDEO</Text>
+          <View style={[styles.videoBadge, isRTL && styles.videoBadgeRTL]}>
+            <Text style={[styles.videoBadgeText, isRTL && styles.videoBadgeTextRTL]}>
+              {t('liveAuctionCard.video')}
+            </Text>
           </View>
         )}
         
         {/* Live Badge */}
-        <View style={styles.liveBadge}>
+        <View style={[styles.liveBadge, isRTL && styles.liveBadgeRTL]}>
           <Check size={12} color={appColors.white} />
-          <Text style={styles.liveBadgeText}>Live</Text>
+          <Text style={[styles.liveBadgeText, isRTL && styles.liveBadgeTextRTL]}>
+            {t('liveAuctionCard.live')}
+          </Text>
         </View>
 
         {/* Timer Badge */}
@@ -144,35 +154,53 @@ export default function LiveAuctionCard({ item, onPress, onViewBidDetails }: Liv
           <Clock size={12} color={appColors.white} />
           <Text style={styles.timerBadgeText}>{getRemainingTime()}</Text>
         </View>
+
+        {/* Like Icon */}
+        <TouchableOpacity
+          style={styles.likeButton}
+          activeOpacity={0.8}
+          onPress={(e) => {
+            e.stopPropagation();
+            if (onFavoritePress) {
+              onFavoritePress();
+            }
+          }}
+        >
+          <Heart 
+            size={20} 
+            color={isFavorite ? appColors.red : appColors.white} 
+            fill={isFavorite ? appColors.red : 'none'}
+          />
+        </TouchableOpacity>
       </View>
 
       {/* Content Section */}
       <View style={styles.contentContainer}>
         {/* Title */}
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.subtitle}>
+        <Text style={[styles.title, isRTL && styles.titleRTL]}>{item.title}</Text>
+        <Text style={[styles.subtitle, isRTL && styles.subtitleRTL]}>
           {item.make} {item.model} {item.year}
         </Text>
 
         {/* Specs Grid */}
-        <View style={styles.specsGrid}>
-          <View style={styles.specItem}>
+        <View style={[styles.specsGrid, isRTL && styles.specsGridRTL]}>
+          <View style={[styles.specItem, isRTL && styles.specItemRTL]}>
             <Calendar size={14} color={appColors.textMuted} />
-            <Text style={styles.specText}>{item.year || 'N/A'}</Text>
+            <Text style={[styles.specText, isRTL && styles.specTextRTL]}>{item.year || 'N/A'}</Text>
           </View>
-          <View style={styles.specItem}>
+          <View style={[styles.specItem, isRTL && styles.specItemRTL]}>
             <Fuel size={14} color={appColors.textMuted} />
-            <Text style={styles.specText}>{item.fuelType || 'N/A'}</Text>
+            <Text style={[styles.specText, isRTL && styles.specTextRTL]}>{item.fuelType || 'N/A'}</Text>
           </View>
-          <View style={styles.specItem}>
+          <View style={[styles.specItem, isRTL && styles.specItemRTL]}>
             <Gauge size={14} color={appColors.textMuted} />
-            <Text style={styles.specText}>
+            <Text style={[styles.specText, isRTL && styles.specTextRTL]}>
               {item.mileage ? `${item.mileage} km` : 'N/A'}
             </Text>
           </View>
-          <View style={styles.specItem}>
+          <View style={[styles.specItem, isRTL && styles.specItemRTL]}>
             <Settings2 size={14} color={appColors.textMuted} />
-            <Text style={styles.specText}>
+            <Text style={[styles.specText, isRTL && styles.specTextRTL]}>
               {item.transmissionType || 'N/A'}
             </Text>
           </View>
@@ -181,20 +209,24 @@ export default function LiveAuctionCard({ item, onPress, onViewBidDetails }: Liv
         <View style={styles.divider} />
 
         {/* Listed By */}
-        <View style={styles.listedByRow}>
+        <View style={[styles.listedByRow, isRTL && styles.listedByRowRTL]}>
           <User size={14} color={appColors.textMuted} />
-          <Text style={styles.listedByText}>Listed by </Text>
-          <Text style={styles.listedByName}>Admin</Text>
+          <Text style={[styles.listedByText, isRTL && styles.listedByTextRTL]}>
+            {t('liveAuctionCard.listedBy')}{' '}
+          </Text>
+          <Text style={[styles.listedByName, isRTL && styles.listedByNameRTL]}>Admin</Text>
         </View>
 
         <View style={styles.divider} />
 
         {/* Current Bid */}
         <View style={styles.bidSection}>
-          <Text style={styles.bidLabel}>Current Bid</Text>
-          <View style={styles.bidAmountRow}>
+          <Text style={[styles.bidLabel, isRTL && styles.bidLabelRTL]}>
+            {t('liveAuctionCard.currentBid')}
+          </Text>
+          <View style={[styles.bidAmountRow, isRTL && styles.bidAmountRowRTL]}>
             <Text style={styles.dollarSign}>$</Text>
-            <Text style={styles.bidAmount}>
+            <Text style={[styles.bidAmount, isRTL && styles.bidAmountRTL]}>
               {bidAmount.toLocaleString('en-US')}
             </Text>
           </View>
@@ -212,7 +244,9 @@ export default function LiveAuctionCard({ item, onPress, onViewBidDetails }: Liv
           }}
         >
           <Eye size={16} color={appColors.white} />
-          <Text style={styles.viewButtonText}>View Bid Details</Text>
+          <Text style={[styles.viewButtonText, isRTL && styles.viewButtonTextRTL]}>
+            {t('liveAuctionCard.viewBidDetails')}
+          </Text>
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
@@ -251,6 +285,9 @@ const styles = StyleSheet.create({
     color: appColors.textMuted,
     fontSize: 14,
   },
+  placeholderTextRTL: {
+    textAlign: 'right',
+  },
   liveBadge: {
     position: 'absolute',
     top: 12,
@@ -263,10 +300,17 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     gap: 4,
   },
+  liveBadgeRTL: {
+    left: 'auto',
+    right: 12,
+  },
   liveBadgeText: {
     color: appColors.white,
     fontSize: 12,
     fontWeight: '600',
+  },
+  liveBadgeTextRTL: {
+    textAlign: 'right',
   },
   timerBadge: {
     position: 'absolute',
@@ -295,10 +339,27 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     zIndex: 1,
   },
+  videoBadgeRTL: {
+    left: 'auto',
+    right: 12,
+  },
   videoBadgeText: {
     color: appColors.white,
     fontSize: 10,
     fontWeight: '700',
+  },
+  videoBadgeTextRTL: {
+    textAlign: 'right',
+  },
+  likeButton: {
+    position: 'absolute',
+    bottom: 12,
+    right: 12,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 20,
+    padding: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   contentContainer: {
     padding: width(4),
@@ -309,10 +370,16 @@ const styles = StyleSheet.create({
     color: appColors.textPrimary,
     marginBottom: 4,
   },
+  titleRTL: {
+    textAlign: 'right',
+  },
   subtitle: {
     fontSize: 14,
     color: appColors.textMuted,
     marginBottom: height(1.5),
+  },
+  subtitleRTL: {
+    textAlign: 'right',
   },
   specsGrid: {
     flexDirection: 'row',
@@ -320,15 +387,24 @@ const styles = StyleSheet.create({
     marginBottom: height(1.5),
     gap: width(3),
   },
+  specsGridRTL: {
+    flexDirection: 'row-reverse',
+  },
   specItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
     width: '45%',
   },
+  specItemRTL: {
+    flexDirection: 'row-reverse',
+  },
   specText: {
     fontSize: 12,
     color: appColors.textMuted,
+  },
+  specTextRTL: {
+    textAlign: 'right',
   },
   divider: {
     height: 1,
@@ -340,14 +416,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
   },
+  listedByRowRTL: {
+    flexDirection: 'row-reverse',
+  },
   listedByText: {
     fontSize: 12,
     color: appColors.textMuted,
+  },
+  listedByTextRTL: {
+    textAlign: 'right',
   },
   listedByName: {
     fontSize: 12,
     color: appColors.primary,
     fontWeight: '600',
+  },
+  listedByNameRTL: {
+    textAlign: 'right',
   },
   bidSection: {
     marginBottom: height(1.5),
@@ -357,9 +442,15 @@ const styles = StyleSheet.create({
     color: appColors.textMuted,
     marginBottom: 4,
   },
+  bidLabelRTL: {
+    textAlign: 'right',
+  },
   bidAmountRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
+  },
+  bidAmountRowRTL: {
+    flexDirection: 'row-reverse',
   },
   dollarSign: {
     fontSize: 18,
@@ -371,6 +462,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     color: appColors.green,
+  },
+  bidAmountRTL: {
+    textAlign: 'right',
   },
   viewButton: {
     flexDirection: 'row',
@@ -386,5 +480,8 @@ const styles = StyleSheet.create({
     color: appColors.white,
     fontSize: 14,
     fontWeight: '600',
+  },
+  viewButtonTextRTL: {
+    textAlign: 'right',
   },
 });

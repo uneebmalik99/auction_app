@@ -8,6 +8,9 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: height(1),
   },
+  rowRTL: {
+    flexDirection: 'row-reverse',
+  },
   box: {
     width: 18,
     height: 18,
@@ -19,6 +22,10 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
   },
+  boxRTL: {
+    marginRight: 0,
+    marginLeft: 8,
+  },
   boxChecked: {
     backgroundColor: appColors.primary,
     borderColor: appColors.primary,
@@ -27,6 +34,9 @@ export const styles = StyleSheet.create({
     flex: 1,
     fontSize: 12,
     color: appColors.textSecondary,
+  },
+  labelRTL: {
+    textAlign: 'right',
   },
   disabled: {
     opacity: 0.6,
